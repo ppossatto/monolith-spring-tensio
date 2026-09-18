@@ -1,0 +1,24 @@
+type: object
+required: [name, username, password, role]
+properties:
+  name:
+    type: string
+    minLength: 2
+    maxLength: 100
+    description: The user's actual name.
+    example: John Doe
+  username:
+    type: string
+    minLength: 9
+    maxLength: 9
+    description: The user's internal username.
+    example: A12345678
+  password:
+    type: string
+    format: password
+    minLength: 8
+    example: StrongPassword123
+  role:
+    type: string
+    enum: [ADMIN, USER]
+    example: USER

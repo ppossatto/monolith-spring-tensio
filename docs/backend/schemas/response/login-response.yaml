@@ -1,0 +1,15 @@
+type: object
+required: [accessToken, tokenType, expiresIn]
+properties:
+  accessToken:
+    type: string
+    description: The generated JWT access token.
+    examples: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...']
+  tokenType:
+    type: string
+    examples: ['Bearer']
+  expiresIn:
+    type: integer
+    format: int32
+    description: The amount of seconds the token will be valid after generating it.
+    examples: [3600]

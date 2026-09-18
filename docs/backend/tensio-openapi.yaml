@@ -1,0 +1,89 @@
+openapi: 3.1.0
+info:
+  title: Tensio
+  description: |-
+    A monolithic application for managing transformers conditions based on chromatographic data and also manging the 
+    substations, analyses and diagnostics.
+  version: 1.0.0
+  license:
+    name: MIT License
+    url: https://github.com/ppossatto/monolith-spring-tensio?tab=MIT-1-ov-file
+externalDocs:
+  description: Check out the code repository
+  url: https://github.com/ppossatto/monolith-spring-tensio
+servers:
+  - url: 'http:localhost:8080'
+    description: Local development server.
+
+tags:
+  - name: transformer
+    description: Operations related to a single or many transformers.
+  - name: substation
+    description: Get, add or modify information about a substation.
+  - name: analysis
+    description: Access or add data about one or many analyses.
+  - name: authentication
+    description: Related to authentication and authorization.
+  - name: reports
+    description: Generation of various reports.
+  - name: admin
+    description: Admin-only resources.
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    loginRequest:
+      $ref: './schemas/request/login-request.yaml'
+    loginResponse:
+      $ref: './schemas/response/login-response.yaml'
+    errorResponse:
+      $ref: './schemas/response/error-response.yaml'
+    createUserRequest:
+      $ref: './schemas/request/create-user-request.yaml'
+
+security:
+  - bearerAuth: []
+paths:
+  /auth/login:
+    post:
+      summary: Authenticate and returns the JWT token
+      security: []
+      tags:
+        - authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginRequest'
+      responses:
+        '200':
+          description: Credentials valid and token generated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/loginResponse'
+        '400':
+          description: The credentials in the request body have a bad format.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/errorResponse'}
+              example: {status: 400, message: 'username has the wrong format'}
+        '401':
+          description: The credentials are invalid.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/errorResponse' }
+              example: { status: 401, message: 'Invalid credentials' }
+        '500':
+          description: An internal error occurred, the logs contains further details.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/errorResponse' }
+              example: { status: 500, message: 'Internal error' }

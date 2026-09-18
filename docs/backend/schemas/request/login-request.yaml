@@ -1,0 +1,11 @@
+type: object
+required: [username, password]
+properties:
+  username:
+    type: string
+    description: The user's username for authentication.
+    examples: ['A12345678']
+  password:
+    type: string
+    description: The user's password.
+    examples: ['admin123']
