@@ -1,2 +1,2 @@
-# monolith-spring-tensio
-Monolithic Spring 7 and Java 25 application for transformers and substations management
+# Tensio
+Monolithic Server-Side Rendering application using Spring 7 and Java 25 for electrical transformers and substations management.

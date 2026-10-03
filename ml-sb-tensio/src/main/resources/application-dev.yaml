@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: ml-sb-tensio
+  security:
+    user:
+      name: admin
+      password: "{noop}admin"
+      roles: ADMIN
+
+  datasource:
+    username: myuser
+    password: ENC(dMvpCJ4t8Nb0/bhzVbgVnw==)
+    url: jdbc:postgres://localhost:5432/mydatabase
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+
+jasypt:
+  encryptor:
+    password: ${JASYPT_ENCRYPTOR_PASSWORD}
+    algorith: PBEWITHHMACSHA512ANDAES_256

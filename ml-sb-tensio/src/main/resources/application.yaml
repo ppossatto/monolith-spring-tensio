@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: ml-sb-tensio
+
+tensio:
+  dga:
+    limits:
+      h2:   { alert: 100,  danger: 200,  alert-rate: 10, danger-rate: 20 }
+      ch4:  { alert: 120,  danger: 240,  alert-rate: 10, danger-rate: 20 }
+      c2h2: { alert: 50,   danger: 100,  alert-rate: 10, danger-rate: 20 }
+      c2h4: { alert: 100,  danger: 200,  alert-rate: 10, danger-rate: 20 }
+      c2h6: { alert: 65,   danger: 130,  alert-rate: 10, danger-rate: 20 }
+      co:   { alert: 500,  danger: 1000, alert-rate: 10, danger-rate: 20 }
+      co2:  { alert: 4000, danger: 8000, alert-rate: 10, danger-rate: 20 }
