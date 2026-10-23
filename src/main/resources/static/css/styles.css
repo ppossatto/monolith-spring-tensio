@@ -114,6 +114,32 @@
 .login-input:focus { border-color: var(--login-primary); }
 .login-input:user-invalid { border-color: var(--login-danger); }
 
+.login-password {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-password .login-input { padding-right: 52px; }
+
+.login-password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    padding: 4px 6px;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--login-text-muted);
+    background: none;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.login-password-toggle:hover { color: var(--login-primary); }
+.login-password-toggle:focus-visible { outline: 2px solid var(--login-primary); }
+
 .login-actions {
     display: flex;
     justify-content: flex-end;
