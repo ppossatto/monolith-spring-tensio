@@ -72,6 +72,7 @@
     --login-input-border: #e6e6e6;
     --login-text-muted: #737373;
     --login-primary: #23a6f0;
+    --login-danger: #dc3545;
 
     font-family: "Montserrat", sans-serif;
     background: var(--login-background);
@@ -111,6 +112,7 @@
 
 .login-input::placeholder { color: var(--login-text-muted); opacity: 1; }
 .login-input:focus { border-color: var(--login-primary); }
+.login-input:user-invalid { border-color: var(--login-danger); }
 
 .login-actions {
     display: flex;
