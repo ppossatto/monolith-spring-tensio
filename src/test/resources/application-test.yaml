@@ -1,0 +1,6 @@
+spring:
+  security:
+    user:
+      name: test@tensio.local
+      password: "{noop}secret"
+      roles: ADMIN
