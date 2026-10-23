@@ -2,14 +2,14 @@ package com.ppossatto.tensio.service;
 
 import com.ppossatto.tensio.domain.analysis.DgaLimitsProperties;
 import com.ppossatto.tensio.domain.analysis.Gas;
+import com.ppossatto.tensio.domain.dashboard.GasRadar;
+import com.ppossatto.tensio.domain.dashboard.HealthSummary;
 import com.ppossatto.tensio.domain.diagnosis.HealthStatus;
 import com.ppossatto.tensio.mapper.AnalysisMapper;
 import com.ppossatto.tensio.repository.AnalysisRepository;
 import com.ppossatto.tensio.repository.TransformerRepository;
 import com.ppossatto.tensio.repository.projection.TransformerOption;
 import com.ppossatto.tensio.repository.projection.TransformerRow;
-import com.ppossatto.tensio.service.dto.GasRadar;
-import com.ppossatto.tensio.service.dto.HealthSummary;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

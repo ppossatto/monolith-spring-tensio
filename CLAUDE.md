@@ -33,8 +33,7 @@ Base package: `com.ppossatto.tensio`
 |-------------------------|--------------------------------------------------------------------------------|
 | `controller`            | `@Controller` classes. Fill the `Model`, return a view name. No business logic. |
 | `service`               | Use cases and orchestration. Concrete classes; no interface for a single implementation. |
-| `service/dto`           | View models built by services for the templates.                              |
-| `domain`                | Business rules and domain types (records, enums, evaluators). No JPA types.    |
+| `domain`                | Business rules and domain types (records, enums, evaluators), including the objects placed in the `Model`. No JPA types. |
 | `entity`                | JPA entities only (persistence mapping, no business logic).                    |
 | `repository`            | Spring Data repositories.                                                      |
 | `repository/projection` | Read-only query projections (JPQL constructor expressions).                    |
@@ -43,7 +42,9 @@ Base package: `com.ppossatto.tensio`
 
 Rules:
 
-- Domain code must not depend on `entity`. Convert entities to domain objects through a mapper.
+- Domain code must not depend on `entity`.
+- Every entity loaded from the database is converted to a domain object through a MapStruct mapper before any processing in the service. Entities never reach controllers or templates.
+- Create domain types and mappers only when a feature actually uses the entity.
 - JPQL constructor expressions must use the fully qualified name of a class that exists in `repository/projection`.
 - Views live in `src/main/resources/templates`. HTMX partials are prefixed with `_` (for example `_transformers.ftlh`).
 - Schema changes go through a new Flyway migration (`V<n>__description.sql`); never edit an applied migration.
