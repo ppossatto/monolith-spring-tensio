@@ -45,6 +45,9 @@ Rules:
 - Domain code must not depend on `entity`.
 - Every entity loaded from the database is converted to a domain object through a MapStruct mapper before any processing in the service. Entities never reach controllers or templates.
 - Create domain types and mappers only when a feature actually uses the entity.
+- No response DTOs: controllers put domain objects (or read-only projections) in the `Model`.
+- Form submissions (POST) bind to an input DTO validated with `@Valid` (Bean Validation), never directly to a domain object or entity.
+- Exception: if a `@RestController` (JSON endpoint) is added, it uses dedicated response DTOs as its public contract.
 - JPQL constructor expressions must use the fully qualified name of a class that exists in `repository/projection`.
 - Views live in `src/main/resources/templates`. HTMX partials are prefixed with `_` (for example `_transformers.ftlh`).
 - Schema changes go through a new Flyway migration (`V<n>__description.sql`); never edit an applied migration.
