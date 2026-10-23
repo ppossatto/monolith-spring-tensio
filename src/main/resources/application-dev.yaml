@@ -3,7 +3,7 @@ spring:
     name: ml-sb-tensio
   security:
     user:
-      name: admin
+      name: admin@tensio.local
       password: "{noop}admin"
       roles: ADMIN
 

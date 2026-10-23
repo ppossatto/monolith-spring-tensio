@@ -9,7 +9,7 @@
   </li>
 </#macro>
 
-<#macro page title active="">
+<#macro page title active="" navbar=true bodyClass="" mainClass="container-fluid py-4">
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -24,7 +24,7 @@
     <script src="<@spring.url '/webjars/chart.js/4.5.1/dist/chart.umd.js'/>" defer></script>
     <script src="<@spring.url '/js/dashboard.js'/>" defer></script>
   </head>
-  <body <#if _csrf??>hx-headers='{"${_csrf.headerName}": "${_csrf.token}"}'</#if>>
+  <body<#if bodyClass?has_content> class="${bodyClass}"</#if> <#if _csrf??>hx-headers='{"${_csrf.headerName}": "${_csrf.token}"}'</#if>>
 
   <#if userLogged??>
     <aside class="sidebar">
@@ -43,6 +43,7 @@
   </#if>
 
   <div class="app-content<#if userLogged??> with-sidebar</#if>">
+    <#if navbar>
     <nav class="navbar bg-body-tertiary px-3">
       <span class="navbar-brand mb-0 h1">${title}</span>
       <#if userLogged?? && _csrf??>
@@ -53,7 +54,8 @@
         </form>
       </#if>
     </nav>
-    <main class="container-fluid py-4">
+    </#if>
+    <main<#if mainClass?has_content> class="${mainClass}"</#if>>
       <#nested>
     </main>
   </div>
