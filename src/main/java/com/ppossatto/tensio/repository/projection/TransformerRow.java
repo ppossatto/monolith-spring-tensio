@@ -1,7 +1,7 @@
-package com.ppossatto.tensio.components.dashboard;
+package com.ppossatto.tensio.repository.projection;
 
-import com.ppossatto.tensio.components.diagnosis.Fault;
-import com.ppossatto.tensio.components.diagnosis.HealthStatus;
+import com.ppossatto.tensio.domain.diagnosis.Fault;
+import com.ppossatto.tensio.domain.diagnosis.HealthStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

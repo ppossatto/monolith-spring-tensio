@@ -1,8 +1,8 @@
 package com.ppossatto.tensio.entity;
 
 import com.ppossatto.tensio.entity.common.BaseEntity;
-import com.ppossatto.tensio.components.transformer.OilType;
-import com.ppossatto.tensio.components.transformer.TransformerStatus;
+import com.ppossatto.tensio.domain.transformer.OilType;
+import com.ppossatto.tensio.domain.transformer.TransformerStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

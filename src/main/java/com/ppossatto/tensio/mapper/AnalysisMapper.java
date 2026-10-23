@@ -1,6 +1,6 @@
 package com.ppossatto.tensio.mapper;
 
-import com.ppossatto.tensio.domain.Analysis;
+import com.ppossatto.tensio.domain.analysis.Analysis;
 import com.ppossatto.tensio.entity.AnalysisEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

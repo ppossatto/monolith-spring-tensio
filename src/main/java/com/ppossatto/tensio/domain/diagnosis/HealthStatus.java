@@ -1,4 +1,4 @@
-package com.ppossatto.tensio.components.diagnosis;
+package com.ppossatto.tensio.domain.diagnosis;
 
 public enum HealthStatus {
   OK, ALERT, DANGER;

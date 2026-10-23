@@ -1,8 +1,8 @@
 package com.ppossatto.tensio.entity;
 
 import com.ppossatto.tensio.entity.common.BaseEntity;
-import com.ppossatto.tensio.components.diagnosis.Fault;
-import com.ppossatto.tensio.components.diagnosis.HealthStatus;
+import com.ppossatto.tensio.domain.diagnosis.Fault;
+import com.ppossatto.tensio.domain.diagnosis.HealthStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
