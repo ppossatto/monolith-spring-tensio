@@ -1,6 +1,5 @@
 package com.ppossatto.tensio.entity;
 
-import com.ppossatto.tensio.components.analysis.Gas;
 import com.ppossatto.tensio.entity.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,16 +42,4 @@ public class AnalysisEntity extends BaseEntity {
   private BigDecimal co;
   @Column(precision = 8, scale = 2)
   private BigDecimal co2;
-
-  public BigDecimal value(Gas gas) {
-    return switch (gas) {
-      case H2 -> h2;
-      case CH4 -> ch4;
-      case C2H2 -> c2h2;
-      case C2H4 -> c2h4;
-      case C2H6 -> c2h6;
-      case CO -> co;
-      case CO2 -> co2;
-    };
-  }
 }

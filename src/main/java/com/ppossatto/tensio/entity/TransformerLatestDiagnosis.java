@@ -1,5 +1,7 @@
-package com.ppossatto.tensio.components.diagnosis;
+package com.ppossatto.tensio.entity;
 
+import com.ppossatto.tensio.domain.diagnosis.Fault;
+import com.ppossatto.tensio.domain.diagnosis.HealthStatus;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import lombok.*;

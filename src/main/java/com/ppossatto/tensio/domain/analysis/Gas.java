@@ -1,4 +1,4 @@
-package com.ppossatto.tensio.components.analysis;
+package com.ppossatto.tensio.domain.analysis;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

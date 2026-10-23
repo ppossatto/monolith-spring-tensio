@@ -1,10 +1,10 @@
 package com.ppossatto.tensio.repository;
 
-import com.ppossatto.tensio.components.dashboard.HealthCount;
-import com.ppossatto.tensio.components.dashboard.TransformerOption;
-import com.ppossatto.tensio.components.dashboard.TransformerRow;
+import com.ppossatto.tensio.repository.projection.HealthCount;
+import com.ppossatto.tensio.repository.projection.TransformerOption;
+import com.ppossatto.tensio.repository.projection.TransformerRow;
 import com.ppossatto.tensio.entity.TransformerEntity;
-import com.ppossatto.tensio.components.transformer.TransformerStatus;
+import com.ppossatto.tensio.domain.transformer.TransformerStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +15,7 @@ import java.util.List;
 public interface TransformerRepository extends JpaRepository<TransformerEntity, Long> {
 
   @Query(value = """
-            select new com.ppossatto.tensio.dashboard.TransformerRow(
+            select new com.ppossatto.tensio.repository.projection.TransformerRow(
                 t.id, t.tag, s.acronym, t.ratedPowerMva, t.criticality,
                 l.healthStatus, l.finalFault, l.sampleDate)
             from TransformerEntity t
@@ -28,7 +28,7 @@ public interface TransformerRepository extends JpaRepository<TransformerEntity, 
   Page<TransformerRow> findDashboardRows(TransformerStatus excluded, Pageable pageable);
 
   @Query("""
-            select new com.ppossatto.tensio.dashboard.HealthCount(l.healthStatus, count(l))
+            select new com.ppossatto.tensio.repository.projection.HealthCount(l.healthStatus, count(l))
             from TransformerLatestDiagnosis l
             join TransformerEntity t on t.id = l.transformerId
             where t.status <> :excluded
@@ -37,7 +37,7 @@ public interface TransformerRepository extends JpaRepository<TransformerEntity, 
   List<HealthCount> countByHealth(TransformerStatus excluded);
 
   @Query("""
-            select new com.ppossatto.tensio.dashboard.TransformerOption(t.id, t.tag)
+            select new com.ppossatto.tensio.repository.projection.TransformerOption(t.id, t.tag)
             from TransformerEntity t
             where t.status <> :excluded
               and exists (select a.id from AnalysisEntity a where a.transformer = t)

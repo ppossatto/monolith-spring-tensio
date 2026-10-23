@@ -1,4 +1,6 @@
-package com.ppossatto.tensio.components.analysis;
+package com.ppossatto.tensio.repository.projection;
+
+import com.ppossatto.tensio.domain.analysis.Gas;
 
 import java.math.BigDecimal;
 

@@ -1,4 +1,4 @@
-package com.ppossatto.tensio.components.analysis;
+package com.ppossatto.tensio.domain.analysis;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

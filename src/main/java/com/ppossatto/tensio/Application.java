@@ -1,6 +1,6 @@
 package com.ppossatto.tensio;
 
-import com.ppossatto.tensio.components.analysis.DgaLimitsProperties;
+import com.ppossatto.tensio.domain.analysis.DgaLimitsProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,8 +1,8 @@
-package com.ppossatto.tensio.components.diagnosis;
+package com.ppossatto.tensio.domain.diagnosis;
 
-import com.ppossatto.tensio.entity.AnalysisEntity;
-import com.ppossatto.tensio.components.analysis.DgaLimitsProperties;
-import com.ppossatto.tensio.components.analysis.Gas;
+import com.ppossatto.tensio.domain.analysis.Analysis;
+import com.ppossatto.tensio.domain.analysis.DgaLimitsProperties;
+import com.ppossatto.tensio.domain.analysis.Gas;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ public class GasHealthEvaluator {
 
   private final DgaLimitsProperties props;
 
-  public HealthStatus evaluate(AnalysisEntity current, AnalysisEntity previous) {
+  public HealthStatus evaluate(Analysis current, Analysis previous) {
     HealthStatus result = HealthStatus.OK;
     for (Gas gas : Gas.values()) {
       var limit = props.limits().get(gas);
@@ -26,7 +26,7 @@ public class GasHealthEvaluator {
       result = HealthStatus.worst(result, byThreshold(value, limit.alert(), limit.danger()));
 
       if (previous != null && previous.value(gas) != null) {
-        long days = ChronoUnit.DAYS.between(previous.getSampleDate(), current.getSampleDate());
+        long days = ChronoUnit.DAYS.between(previous.sampleDate(), current.sampleDate());
         if (days > 0) {
           var rate = value.subtract(previous.value(gas))
              .divide(BigDecimal.valueOf(days), 4, RoundingMode.HALF_UP);

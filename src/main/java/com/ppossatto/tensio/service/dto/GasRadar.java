@@ -1,4 +1,4 @@
-package com.ppossatto.tensio.components.dashboard;
+package com.ppossatto.tensio.service.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
