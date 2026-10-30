@@ -29,6 +29,7 @@ public class DashboardService {
 
   private static final int HIGHLIGHTED_TRANSFORMERS = 12;
   private static final int LATEST_ANALYSES = 5;
+  private static final int SUBSTATIONS = 5;
 
   private final TransformerRepository transformers;
   private final SubstationRepository substations;
@@ -53,11 +54,11 @@ public class DashboardService {
     return transformers.findDashboardRowsOrderedByHealth(DECOMMISSIONED, PageRequest.of(0, HIGHLIGHTED_TRANSFORMERS));
   }
 
-  /// Returns every substation with its transformer count and how many are in DANGER.
+  /// Returns the substations with their transformer count and how many are in DANGER.
   ///
-  /// @return substations needing attention first, then by acronym
+  /// @return up to {@value #SUBSTATIONS} substations, needing attention first, then by acronym
   public List<SubstationRow> substations() {
-    return substations.findSummaries(DECOMMISSIONED, HealthStatus.DANGER);
+    return substations.findSummaries(DECOMMISSIONED, HealthStatus.DANGER, PageRequest.of(0, SUBSTATIONS));
   }
 
   /// Returns the most recent analyses with their diagnosis.

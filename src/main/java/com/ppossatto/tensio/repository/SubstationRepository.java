@@ -39,13 +39,14 @@ public interface SubstationRepository extends JpaRepository<SubstationEntity, Lo
 
   String ATTENTION_FIRST = "order by " + ATTENTION_COUNT + " desc, s.acronym";
 
-  /// Every substation, substations needing attention first.
+  /// Substations needing attention first, limited by `pageable` (no count query).
   ///
   /// @param excluded  transformer status left out of the counts
   /// @param attention health status counted as "needs attention"
-  /// @return all substations
+  /// @param pageable  requested slice, e.g. the first N substations
+  /// @return the substations of the slice
   @Query(SUMMARY_SELECT + GROUP_BY + ATTENTION_FIRST)
-  List<SubstationRow> findSummaries(TransformerStatus excluded, HealthStatus attention);
+  List<SubstationRow> findSummaries(TransformerStatus excluded, HealthStatus attention, Pageable pageable);
 
   /// Substations whose acronym or name matches `namePattern`, needing attention first.
   ///
