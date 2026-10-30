@@ -20,7 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -78,7 +77,7 @@ class AuthenticationIT {
   void protectedPageRedirectsAnonymousUserToLogin() throws Exception {
     mvc.perform(get("/"))
        .andExpect(status().is3xxRedirection())
-       .andExpect(redirectedUrlPattern("**/login"));
+       .andExpect(redirectedUrl("/login"));
   }
 
   @Test

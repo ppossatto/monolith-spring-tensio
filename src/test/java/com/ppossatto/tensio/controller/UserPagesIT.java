@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebIntegrationTest
@@ -72,7 +72,7 @@ class UserPagesIT {
 
   @Test
   void anonymousIsSentToLogin() throws Exception {
-    mvc.perform(get("/users")).andExpect(redirectedUrlPattern("**/login"));
+    mvc.perform(get("/users")).andExpect(redirectedUrl("/login"));
   }
 
   private String dashboard() throws Exception {
