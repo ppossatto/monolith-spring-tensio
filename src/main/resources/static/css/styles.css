@@ -73,6 +73,18 @@
 /* Clickable table rows (see js/table-rows.js) */
 tr[data-href] { cursor: pointer; }
 
+/* Color mode toggle (see js/theme.js): show the icon of the mode it switches to */
+.theme-toggle {
+    font-size: 1.35rem;
+    line-height: 1;
+    color: var(--bs-secondary-color);
+}
+
+.theme-toggle:hover { color: var(--bs-body-color); }
+.theme-toggle .theme-icon-dark { display: none; }
+[data-bs-theme="dark"] .theme-toggle .theme-icon-light { display: none; }
+[data-bs-theme="dark"] .theme-toggle .theme-icon-dark { display: inline; }
+
 /* Fonts (self-hosted, SIL Open Font License: /fonts/montserrat/OFL.txt) */
 @font-face {
     font-family: "Montserrat";
@@ -104,6 +116,21 @@ tr[data-href] { cursor: pointer; }
     background: var(--login-background);
 }
 
+.login-page[data-bs-theme="dark"],
+[data-bs-theme="dark"] .login-page {
+    --login-background: #16191c;
+    --login-card-background: #212529;
+    --login-input-background: #2b3035;
+    --login-input-border: #495057;
+    --login-text-muted: #adb5bd;
+}
+
+.login-theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+}
+
 .login-wrapper {
     min-height: 100vh;
     display: flex;
@@ -125,6 +152,7 @@ tr[data-href] { cursor: pointer; }
 }
 
 .login-input {
+    color: var(--bs-body-color);
     height: 50px;
     padding: 0 21px;
     font: inherit;
@@ -196,5 +224,5 @@ tr[data-href] { cursor: pointer; }
     border-radius: 5px;
 }
 
-.login-alert-error { color: #842029; background: #f8d7da; }
-.login-alert-info { color: #055160; background: #cff4fc; }
+.login-alert-error { color: var(--bs-danger-text-emphasis); background: var(--bs-danger-bg-subtle); }
+.login-alert-info { color: var(--bs-info-text-emphasis); background: var(--bs-info-bg-subtle); }

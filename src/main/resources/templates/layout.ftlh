@@ -9,6 +9,14 @@
   </li>
 </#macro>
 
+<#macro themeToggle class="">
+  <button type="button" class="btn btn-link theme-toggle p-0 ${class}" data-theme-toggle
+          aria-label="Toggle dark mode" title="Toggle dark mode">
+    <i class="bi bi-moon-stars theme-icon-light" aria-hidden="true"></i>
+    <i class="bi bi-sun theme-icon-dark" aria-hidden="true"></i>
+  </button>
+</#macro>
+
 <#macro page title active="" navbar=true bodyClass="" mainClass="container-fluid py-4">
   <!DOCTYPE html>
   <html lang="en">
@@ -16,6 +24,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>${title} · Tensio</title>
+    <meta name="color-scheme" content="light dark">
+    <script src="<@spring.url '/js/theme.js'/>"></script>
     <link rel="stylesheet" href="<@spring.url '/webjars/bootstrap/5.3.8/dist/css/bootstrap.min.css'/>">
     <link rel="stylesheet" href="<@spring.url '/webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.min.css'/>">
     <link rel="stylesheet" href="<@spring.url '/css/styles.css'/>">
@@ -50,23 +60,26 @@
     <nav class="navbar bg-body-tertiary px-3">
       <span class="navbar-brand mb-0 h1">${title}</span>
       <#if userLogged?? && _csrf??>
-        <div class="dropdown">
-          <button type="button" class="btn btn-link user-menu-toggle p-0" data-bs-toggle="dropdown"
-                  aria-expanded="false" aria-label="User menu">
-            <i class="bi bi-person-circle" aria-hidden="true"></i>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-            <li><h6 class="dropdown-header">${userLogged}</h6></li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-              <form action="<@spring.url '/logout'/>" method="post">
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-                <button type="submit" class="dropdown-item">
-                  <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>Logout
-                </button>
-              </form>
-            </li>
-          </ul>
+        <div class="d-flex align-items-center gap-3">
+          <@themeToggle/>
+          <div class="dropdown">
+            <button type="button" class="btn btn-link user-menu-toggle p-0" data-bs-toggle="dropdown"
+                    aria-expanded="false" aria-label="User menu">
+              <i class="bi bi-person-circle" aria-hidden="true"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+              <li><h6 class="dropdown-header">${userLogged}</h6></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form action="<@spring.url '/logout'/>" method="post">
+                  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                  <button type="submit" class="dropdown-item">
+                    <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>Logout
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </div>
         </div>
       </#if>
     </nav>

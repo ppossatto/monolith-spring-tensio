@@ -135,7 +135,7 @@
                                                 ${s.dangerCount()} in danger
                                             </span>
                                         </#if>
-                                        <span class="badge rounded-pill text-bg-light border text-nowrap">
+                                        <span class="badge rounded-pill bg-body-tertiary text-body border text-nowrap">
                                             ${s.transformerCount()} transformer<#if s.transformerCount() != 1>s</#if>
                                         </span>
                                     </div>

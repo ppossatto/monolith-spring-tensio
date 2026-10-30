@@ -3,6 +3,7 @@
 
 <@layout.page title="Sign In" navbar=false bodyClass="login-page" mainClass="">
     <div class="login-wrapper">
+        <@layout.themeToggle class="login-theme-toggle"/>
         <form action="<@spring.url '/login'/>" method="post" class="login-card">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 
