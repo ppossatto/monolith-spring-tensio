@@ -97,4 +97,16 @@ public interface TransformerRepository extends JpaRepository<TransformerEntity, 
   /// @return the transformer, empty when it does not exist
   @EntityGraph(attributePaths = "substation")
   Optional<TransformerEntity> findWithSubstationById(Long id);
+
+  /// Returns the transformer with the given tag, ignoring case.
+  ///
+  /// @param tag the tag
+  /// @return the transformer, empty when there is none
+  Optional<TransformerEntity> findByTagIgnoreCase(String tag);
+
+  /// Returns the transformer with the given serial number, ignoring case.
+  ///
+  /// @param serialNumber the serial number
+  /// @return the transformer, empty when there is none
+  Optional<TransformerEntity> findBySerialNumberIgnoreCase(String serialNumber);
 }

@@ -36,10 +36,17 @@
         <a href="<@spring.url '/transformers'/>" class="d-inline-flex align-items-center gap-1 small">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to transformers
         </a>
-        <a href="<@spring.url '/transformers/${t.id()?c}/pdf'/>" class="btn btn-sm btn-outline-secondary"
-           download>
-            <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> Export PDF
-        </a>
+        <div class="d-flex gap-2">
+            <#if isAdmin!false>
+                <a href="<@spring.url '/transformers/${t.id()?c}/edit'/>" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-pencil" aria-hidden="true"></i> Edit
+                </a>
+            </#if>
+            <a href="<@spring.url '/transformers/${t.id()?c}/pdf'/>" class="btn btn-sm btn-outline-secondary"
+               download>
+                <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> Export PDF
+            </a>
+        </div>
     </div>
 
     <form class="d-flex flex-column gap-4" aria-label="Transformer ${t.tag()}">

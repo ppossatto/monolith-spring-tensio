@@ -24,10 +24,17 @@
             </#list>
         </div>
 
-        <div class="input-group input-group-sm search-field">
-            <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
-            <input type="search" name="q" value="${q}" maxlength="50" class="form-control"
-                   placeholder="Search by tag" aria-label="Search by tag" autocomplete="off">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <div class="input-group input-group-sm search-field">
+                <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+                <input type="search" name="q" value="${q}" maxlength="50" class="form-control"
+                       placeholder="Search by tag" aria-label="Search by tag" autocomplete="off">
+            </div>
+            <#if isAdmin!false>
+                <a href="<@spring.url '/transformers/new'/>" class="btn btn-sm btn-primary text-nowrap">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i> New transformer
+                </a>
+            </#if>
         </div>
     </form>
 

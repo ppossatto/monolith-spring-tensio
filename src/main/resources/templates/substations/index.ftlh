@@ -17,10 +17,18 @@
             <label class="btn btn-outline-secondary" for="attention-only">Needs attention</label>
         </div>
 
-        <div class="input-group input-group-sm search-field">
-            <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
-            <input type="search" name="q" value="${q}" maxlength="50" class="form-control"
-                   placeholder="Search by acronym or name" aria-label="Search by acronym or name" autocomplete="off">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <div class="input-group input-group-sm search-field">
+                <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+                <input type="search" name="q" value="${q}" maxlength="50" class="form-control"
+                       placeholder="Search by acronym or name" aria-label="Search by acronym or name"
+                       autocomplete="off">
+            </div>
+            <#if isAdmin!false>
+                <a href="<@spring.url '/substations/new'/>" class="btn btn-sm btn-primary text-nowrap">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i> New substation
+                </a>
+            </#if>
         </div>
     </form>
 

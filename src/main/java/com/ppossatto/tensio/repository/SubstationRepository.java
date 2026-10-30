@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 /// Substation queries. In every summary query, `:excluded` is the transformer status left out of the
 /// counts and `:attention` the health status counted as "needs attention".
@@ -73,4 +74,15 @@ public interface SubstationRepository extends JpaRepository<SubstationEntity, Lo
             """ + NAME_FILTER + "and t.status <> :excluded and l.healthStatus = :attention")
   Page<SubstationRow> findSummariesNeedingAttention(TransformerStatus excluded, HealthStatus attention,
                                                     String namePattern, Pageable pageable);
+
+  /// Returns the substation with the given acronym, ignoring case.
+  ///
+  /// @param acronym the acronym
+  /// @return the substation, empty when there is none
+  Optional<SubstationEntity> findByAcronymIgnoreCase(String acronym);
+
+  /// Every substation ordered by acronym, for the transformer form.
+  ///
+  /// @return all substations
+  List<SubstationEntity> findAllByOrderByAcronym();
 }
