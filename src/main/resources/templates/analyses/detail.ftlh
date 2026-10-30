@@ -41,7 +41,7 @@
                     <#assign hs = diagnosis.healthStatus().name()>
                     <span class="badge text-bg-${badge[hs]}">${hs}</span>
                 <#else>
-                    <span class="badge text-bg-light border">Pending</span>
+                    <span class="badge bg-body-tertiary text-body border">Pending</span>
                 </#if>
             </div>
             <div class="card-body row g-3">
