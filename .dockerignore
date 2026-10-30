@@ -1,0 +1,18 @@
+# Build output and IDE files
+target/
+.idea/
+*.iml
+.vscode/
+
+# VCS and local files
+.git/
+.gitignore
+compose.yaml
+Dockerfile
+.dockerignore
+
+# Never send certificates or keys to the build context
+*.pem
+*.key
+*.p12
+*.jks

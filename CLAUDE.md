@@ -67,3 +67,8 @@ Rules:
 - `dev`: local database and dummy data, including users (`admin@tensio.local` / `admin`).
 - `test`: used by the test suite (Testcontainers); no dummy data, only the small fixture in `src/test/resources/db/test` (test users, TT-01..TT-12, TSA/TSB/TSC). Its expected numbers are described at the top of `V1001__test_data.sql` and in `TestData`; keep them in sync when the fixture changes.
 - `tls`: HTTPS served by the application; combine with another profile (`dev,tls`). Certificates come from the `TLS_CERTIFICATE` / `TLS_PRIVATE_KEY` environment variables and are never committed.
+
+## Docker
+
+- `Dockerfile`: multi-stage, `eclipse-temurin:25-jdk-alpine` builds with `./mvnw` (tests skipped), `eclipse-temurin:25-jre-alpine` runs the extracted Spring Boot layers as a non-root user. `fontconfig` and `ttf-dejavu` are required by JasperReports.
+- `compose.yaml`: services without a compose profile are started by the Spring Boot Docker Compose support in dev; the `app` service only with `docker compose --profile app up --build`.
