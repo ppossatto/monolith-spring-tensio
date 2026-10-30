@@ -44,6 +44,7 @@ Tensio is a monolithic Spring MVC application with server-side rendering.
 - Analyses are only created through `AnalysisService.store` / `register`, which compute the diagnosis with `DiagnosisEngine` and store both in the same transaction. Never insert analyses another way in application code.
 - `DiagnosisEngine`: limits first (`GasHealthEvaluator`); below every alert limit → `NORMAL` / `OK` without applying the methods; otherwise Duval Triangle 1, IEC 60599 ratios, Rogers (IEEE C57.104) and Doernenburg, combined by `FinalFaultResolver` (weighted vote), with a documented fallback. Individual methods may be "not applicable" (`null`); the final fault never is.
 - Analyses inserted by SQL scripts without diagnosis are diagnosed on startup (`DiagnosisBackfill`).
+- CSV import (`/analyses/import`, `service/batch`): a Spring Batch chunk step (in-memory job repository, jobs never run on startup) validates each line (`CsvAnalysisProcessor`) and stores it through `AnalysisService.store`; invalid lines are skipped and listed in the e-mail. Imports run one at a time in the background. Format: `CsvAnalysisFormat`; template in `static/files/analyses-template.csv`.
 - After the commit, a summary e-mail goes to the user who submitted the analyses (`AnalysesDiagnosedEvent`, `DiagnosisMailService`). In dev, Mailpit catches it (http://localhost:8025).
 
 ## Architecture (MVC layers)
