@@ -34,7 +34,7 @@ import static com.ppossatto.tensio.domain.transformer.TransformerStatus.DECOMMIS
 public class DashboardService {
 
   private static final int PAGE_SIZE = 10;
-  private static final int TOP_TRANSFORMERS = 3;
+  private static final int HIGHLIGHTED_TRANSFORMERS = 12;
   private static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
 
   private final TransformerRepository transformers;
@@ -55,11 +55,11 @@ public class DashboardService {
     return transformers.findDashboardRows(DECOMMISSIONED, PageRequest.of(Math.max(page, 0), PAGE_SIZE));
   }
 
-  /// Returns the most important transformers: highest criticality first, then worst health.
+  /// Returns the transformers that need attention first: worst health, then highest criticality.
   ///
-  /// @return up to {@value #TOP_TRANSFORMERS} transformers, in dashboard priority order
-  public List<TransformerRow> topTransformers() {
-    return transformers.findTopDashboardRows(DECOMMISSIONED, PageRequest.of(0, TOP_TRANSFORMERS));
+  /// @return up to {@value #HIGHLIGHTED_TRANSFORMERS} transformers
+  public List<TransformerRow> highlightedTransformers() {
+    return transformers.findDashboardRowsByHealth(DECOMMISSIONED, PageRequest.of(0, HIGHLIGHTED_TRANSFORMERS));
   }
 
   public List<TransformerOption> radarOptions() {

@@ -17,7 +17,7 @@ class DashboardController {
   String index(@RequestParam(defaultValue = "0") int page, Model model) {
     var options = dashboard.radarOptions();
     model.addAttribute("summary", dashboard.summary());
-    model.addAttribute("topTransformers", dashboard.topTransformers());
+    model.addAttribute("highlights", dashboard.highlightedTransformers());
     model.addAttribute("transformers", dashboard.transformers(page));
     model.addAttribute("radarOptions", options);
     if (!options.isEmpty()) {

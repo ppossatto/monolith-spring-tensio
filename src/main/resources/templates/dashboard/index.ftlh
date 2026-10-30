@@ -14,7 +14,7 @@
     </div>
 </#macro>
 
-<#macro topTransformer t>
+<#macro transformerCard t>
     <div class="col-md-4">
         <div class="card h-100">
             <div class="card-body">
@@ -58,10 +58,42 @@
                 <@card "Danger" summary.danger() "danger"/>
             </div>
 
-            <h3 class="h6 text-muted text-uppercase small mt-4 mb-3">Most important</h3>
-            <#if topTransformers?has_content>
-                <div class="row g-3">
-                    <#list topTransformers as t><@topTransformer t/></#list>
+            <#assign slides = highlights?chunk(3)>
+            <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                <h3 class="h6 text-muted text-uppercase small mb-0">Most important</h3>
+                <#if slides?size gt 1>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-target="#transformer-highlights"
+                                data-bs-slide="prev" aria-label="Previous transformers">
+                            <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-target="#transformer-highlights"
+                                data-bs-slide="next" aria-label="Next transformers">
+                            <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </#if>
+            </div>
+            <#if highlights?has_content>
+                <div id="transformer-highlights" class="carousel slide transformer-highlights">
+                    <div class="carousel-inner">
+                        <#list slides as slide>
+                            <div class="carousel-item<#if slide?is_first> active</#if>">
+                                <div class="row g-3">
+                                    <#list slide as t><@transformerCard t/></#list>
+                                </div>
+                            </div>
+                        </#list>
+                    </div>
+                    <#if slides?size gt 1>
+                        <div class="carousel-indicators">
+                            <#list slides as slide>
+                                <button type="button" data-bs-target="#transformer-highlights"
+                                        data-bs-slide-to="${slide?index}"<#if slide?is_first> class="active" aria-current="true"</#if>
+                                        aria-label="Slide ${slide?counter} of ${slides?size}"></button>
+                            </#list>
+                        </div>
+                    </#if>
                 </div>
             <#else>
                 <p class="text-muted mb-0">No transformers registered.</p>

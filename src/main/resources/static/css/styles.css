@@ -57,6 +57,16 @@
 .user-menu-toggle:hover,
 .user-menu-toggle[aria-expanded="true"] { color: var(--bs-body-color); }
 
+/* Dashboard: transformer highlights carousel */
+.transformer-highlights .carousel-indicators {
+    position: static;
+    margin: 1rem 0 0;
+}
+
+.transformer-highlights .carousel-indicators [data-bs-target] {
+    background-color: var(--bs-secondary-color);
+}
+
 /* Fonts (self-hosted, SIL Open Font License: /fonts/montserrat/OFL.txt) */
 @font-face {
     font-family: "Montserrat";
