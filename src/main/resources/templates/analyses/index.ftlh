@@ -5,23 +5,22 @@
     {"id": "all", "label": "All", "value": ""},
     {"id": "ok", "label": "Healthy", "value": "OK"},
     {"id": "alert", "label": "Alert", "value": "ALERT"},
-    {"id": "danger", "label": "Danger", "value": "DANGER"},
-    {"id": "pending", "label": "Pending", "value": "PENDING"}
+    {"id": "danger", "label": "Danger", "value": "DANGER"}
 ]>
-<#assign current = state???then(state.name(), "")>
+<#assign current = health???then(health.name(), "")>
 
 <@layout.page title="Analyses" active="analyses">
-    <#-- Diagnosis filter, period and tag search share one form, so they are always sent together.
+    <#-- Health filter, period and tag search share one form, so they are always sent together.
          Without JavaScript the form still works as a plain GET. -->
     <form role="search" action="<@spring.url '/analyses'/>" method="get"
           class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"
           hx-get="<@spring.url '/analyses'/>" hx-trigger="input delay:300ms, change, search, submit"
           hx-target="#analyses" hx-swap="outerHTML" hx-push-url="true">
-        <div class="btn-group btn-group-sm" role="group" aria-label="Filter by diagnosis">
+        <div class="btn-group btn-group-sm" role="group" aria-label="Filter by health">
             <#list filters as f>
-                <input type="radio" class="btn-check" name="state" id="state-${f.id}" value="${f.value}"
+                <input type="radio" class="btn-check" name="health" id="health-${f.id}" value="${f.value}"
                        autocomplete="off"<#if f.value == current> checked</#if>>
-                <label class="btn btn-outline-secondary" for="state-${f.id}">${f.label}</label>
+                <label class="btn btn-outline-secondary" for="health-${f.id}">${f.label}</label>
             </#list>
         </div>
 
@@ -40,6 +39,9 @@
                        placeholder="Search by transformer tag" aria-label="Search by transformer tag"
                        autocomplete="off">
             </div>
+            <a href="<@spring.url '/analyses/new'/>" class="btn btn-sm btn-primary text-nowrap">
+                <i class="bi bi-plus-lg" aria-hidden="true"></i> New analysis
+            </a>
         </div>
     </form>
 

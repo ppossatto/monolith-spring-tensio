@@ -7,3 +7,11 @@ services:
       - 'POSTGRES_USER=myuser'
     ports:
       - '5432'
+
+  # SMTP server for development: catches every e-mail sent by the application.
+  # Web UI: http://localhost:8025
+  mailpit:
+    image: 'axllent/mailpit:v1.31.6'
+    ports:
+      - '1025:1025'
+      - '8025:8025'

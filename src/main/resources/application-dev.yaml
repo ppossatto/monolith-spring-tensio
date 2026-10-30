@@ -12,6 +12,10 @@ spring:
     locations:
       - classpath:db/migration
       - classpath:db/dev
+  mail:
+    # Mailpit from compose.yaml (web UI on http://localhost:8025)
+    host: localhost
+    port: 1025
   jpa:
     show-sql: true
     hibernate:

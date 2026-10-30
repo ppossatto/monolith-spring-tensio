@@ -1,19 +1,22 @@
 package com.ppossatto.tensio.service;
 
 import com.ppossatto.tensio.domain.analysis.AnalysisFixtures;
-import com.ppossatto.tensio.domain.analysis.DiagnosisState;
 import com.ppossatto.tensio.domain.analysis.Gas;
+import com.ppossatto.tensio.domain.diagnosis.DiagnosisEngine;
 import com.ppossatto.tensio.domain.diagnosis.GasHealthEvaluator;
 import com.ppossatto.tensio.domain.diagnosis.HealthStatus;
+import com.ppossatto.tensio.mapper.AnalysisFormMapper;
 import com.ppossatto.tensio.mapper.AnalysisMapper;
 import com.ppossatto.tensio.mapper.DiagnosisMapper;
 import com.ppossatto.tensio.repository.AnalysisRepository;
 import com.ppossatto.tensio.repository.DiagnosisRepository;
+import com.ppossatto.tensio.repository.TransformerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,14 +44,22 @@ class AnalysisServiceTest {
   private AnalysisMapper analysisMapper;
   @Mock
   private DiagnosisMapper diagnosisMapper;
+  @Mock
+  private TransformerRepository transformers;
+  @Mock
+  private AnalysisFormMapper formMapper;
+  @Mock
+  private DiagnosisEngine engine;
+  @Mock
+  private ApplicationEventPublisher events;
 
   private AnalysisService service;
 
   @BeforeEach
   void createService() {
     var limits = AnalysisFixtures.limits();
-    service = new AnalysisService(analyses, diagnoses, analysisMapper, diagnosisMapper,
-       new GasHealthEvaluator(limits), limits);
+    service = new AnalysisService(analyses, diagnoses, transformers, analysisMapper, diagnosisMapper, formMapper,
+       engine, new GasHealthEvaluator(limits), limits, events);
   }
 
   @Test
@@ -69,17 +80,10 @@ class AnalysisServiceTest {
   }
 
   @Test
-  void healthStateFiltersByHealthStatus() {
-    service.list(DiagnosisState.DANGER, "", null, null, 0);
+  void healthFiltersByHealthStatus() {
+    service.list(HealthStatus.DANGER, "", null, null, 0);
 
     verify(analyses).findRowsWithHealth(eq("%"), eq(MIN), eq(MAX), eq(HealthStatus.DANGER), any(Pageable.class));
-  }
-
-  @Test
-  void pendingStateUsesThePendingQuery() {
-    service.list(DiagnosisState.PENDING, "", null, null, 0);
-
-    verify(analyses).findPendingRows(eq("%"), eq(MIN), eq(MAX), any(Pageable.class));
   }
 
   @Test

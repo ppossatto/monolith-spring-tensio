@@ -16,6 +16,10 @@ server:
         same-site: lax
 
 tensio:
+  # Sender and links of the diagnosis summary e-mails
+  mail:
+    from: ${TENSIO_MAIL_FROM:tensio@localhost}
+  base-url: ${TENSIO_BASE_URL:http://localhost:8080}
   dga:
     limits:
       h2:   { alert: 100,  danger: 200,  alert-rate: 10, danger-rate: 20 }

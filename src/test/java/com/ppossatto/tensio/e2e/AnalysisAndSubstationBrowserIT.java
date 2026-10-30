@@ -17,14 +17,13 @@ class AnalysisAndSubstationBrowserIT extends PlaywrightSupport {
   }
 
   @Test
-  void pendingFilterShowsAnalysesWithoutDiagnosis() {
+  void healthFilterShowsAlertAnalyses() {
     page.navigate(url("/analyses"));
 
-    page.locator("label[for=state-pending]").click();
+    page.locator("label[for=health-alert]").click();
 
     assertThat(rows("analyses")).hasCount(1);
-    assertThat(rows("analyses")).containsText("TT-03");
-    assertThat(rows("analyses")).containsText("Pending");
+    assertThat(rows("analyses")).containsText("TT-02");
   }
 
   @Test

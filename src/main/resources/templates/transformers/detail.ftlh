@@ -37,6 +37,9 @@
             <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to transformers
         </a>
         <div class="d-flex gap-2">
+            <a href="<@spring.url '/analyses/new?transformerId=${t.id()?c}'/>" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-clipboard-plus" aria-hidden="true"></i> Add analysis
+            </a>
             <#if isAdmin!false>
                 <a href="<@spring.url '/transformers/${t.id()?c}/edit'/>" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-pencil" aria-hidden="true"></i> Edit

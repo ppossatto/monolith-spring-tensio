@@ -90,14 +90,29 @@ public interface AnalysisRepository extends JpaRepository<AnalysisEntity, Long> 
   Page<AnalysisRow> findRowsWithHealth(String tagPattern, LocalDate from, LocalDate to, HealthStatus health,
                                        Pageable pageable);
 
-  /// Same as {@link #findRows}, only analyses without diagnosis yet.
+  /// Most recent analysis of a transformer sampled before a date (for generation rates).
   ///
-  /// @param tagPattern lower-case LIKE pattern, `!` as escape
-  /// @param from       first sample date included
-  /// @param to         last sample date included
-  /// @param pageable   requested page
-  /// @return the page of analyses
-  @Query(value = ROWS_SELECT + ROWS_FILTER + "and d.id is null " + NEWEST_FIRST,
-     countQuery = ROWS_COUNT + ROWS_FILTER + "and d.id is null")
-  Page<AnalysisRow> findPendingRows(String tagPattern, LocalDate from, LocalDate to, Pageable pageable);
+  /// @param transformerId the transformer id
+  /// @param before        sample dates on or after this one are ignored
+  /// @return the previous analysis, empty when there is none
+  Optional<AnalysisEntity> findFirstByTransformerIdAndSampleDateBeforeOrderBySampleDateDesc(Long transformerId,
+                                                                                         LocalDate before);
+
+  /// Whether a transformer already has an analysis on a date (one analysis per transformer and day).
+  ///
+  /// @param transformerId the transformer id
+  /// @param sampleDate    the sample date
+  /// @return `true` when it exists
+  boolean existsByTransformerIdAndSampleDate(Long transformerId, LocalDate sampleDate);
+
+  /// Analyses without diagnosis, per transformer and oldest first, so each one is diagnosed after its
+  /// previous analysis. Only data created outside the application (e.g. imported SQL) can be in this state.
+  ///
+  /// @return the undiagnosed analyses
+  @Query("""
+            select a from AnalysisEntity a
+            where not exists (select d.id from DiagnosisEntity d where d.analysis = a)
+            order by a.transformer.id, a.sampleDate
+            """)
+  List<AnalysisEntity> findUndiagnosed();
 }

@@ -2,7 +2,7 @@
 <#import "/_pagination.ftlh" as pagination>
 <#assign badge = {"OK": "success", "ALERT": "warning", "DANGER": "danger"}>
 <#assign filterQuery = "">
-<#if state??><#assign filterQuery = filterQuery + "&state=" + state.name()></#if>
+<#if health??><#assign filterQuery = filterQuery + "&health=" + health.name()></#if>
 <#if q?has_content><#assign filterQuery = filterQuery + "&q=" + q?url("UTF-8")></#if>
 <#if from?has_content><#assign filterQuery = filterQuery + "&from=" + from></#if>
 <#if to?has_content><#assign filterQuery = filterQuery + "&to=" + to></#if>
@@ -25,7 +25,7 @@
                             <#assign hs = a.healthStatus().name()>
                             <span class="badge text-bg-${badge[hs]}">${hs}</span>
                         <#else>
-                            <span class="badge text-bg-light border">Pending</span>
+                            <span class="text-muted">—</span>
                         </#if>
                     </td>
                 </tr>
