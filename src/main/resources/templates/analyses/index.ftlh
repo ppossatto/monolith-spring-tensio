@@ -39,6 +39,9 @@
                        placeholder="Search by transformer tag" aria-label="Search by transformer tag"
                        autocomplete="off">
             </div>
+            <a href="<@spring.url '/analyses/import'/>" class="btn btn-sm btn-outline-primary text-nowrap">
+                <i class="bi bi-upload" aria-hidden="true"></i> Import CSV
+            </a>
             <a href="<@spring.url '/analyses/new'/>" class="btn btn-sm btn-primary text-nowrap">
                 <i class="bi bi-plus-lg" aria-hidden="true"></i> New analysis
             </a>

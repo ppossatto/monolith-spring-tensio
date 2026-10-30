@@ -13,11 +13,12 @@ public class DiagnosisNotificationListener {
 
   private final DiagnosisMailService mail;
 
-  /// Handles the event after the commit; nothing is sent when the transaction rolls back.
+  /// Handles the event after the commit (nothing is sent when the transaction rolls back), or right away when
+  /// it is published outside a transaction, as the CSV import does at the end of the job.
   ///
   /// @param event the diagnosed analyses
   @Async
-  @TransactionalEventListener
+  @TransactionalEventListener(fallbackExecution = true)
   public void onAnalysesDiagnosed(AnalysesDiagnosedEvent event) {
     mail.sendSummary(event);
   }
