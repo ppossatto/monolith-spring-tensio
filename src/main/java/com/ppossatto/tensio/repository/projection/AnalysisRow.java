@@ -11,7 +11,8 @@ import java.time.LocalDate;
 /// @param sampleDate     sample date
 /// @param transformerId  analysed transformer id
 /// @param transformerTag analysed transformer tag
+/// @param substation     substation acronym of the transformer
 /// @param finalFault     final fault, `null` when not diagnosed yet
 /// @param healthStatus   health status, `null` when not diagnosed yet
-public record AnalysisRow(Long id, LocalDate sampleDate, Long transformerId, String transformerTag,
+public record AnalysisRow(Long id, LocalDate sampleDate, Long transformerId, String transformerTag, String substation,
                           Fault finalFault, HealthStatus healthStatus) {}

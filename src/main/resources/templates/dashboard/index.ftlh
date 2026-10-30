@@ -163,8 +163,8 @@
                             </thead>
                             <tbody>
                             <#list latestAnalyses as a>
-                                <tr data-href="<@spring.url '/transformers/${a.transformerId()?c}'/>">
-                                    <td class="text-nowrap">${a.sampleDate()}</td>
+                                <tr data-href="<@spring.url '/analyses/${a.id()?c}'/>">
+                                    <td class="text-nowrap"><a href="<@spring.url '/analyses/${a.id()?c}'/>">${a.sampleDate()}</a></td>
                                     <td><a href="<@spring.url '/transformers/${a.transformerId()?c}'/>">${a.transformerTag()}</a></td>
                                     <td><#if a.finalFault()??>${a.finalFault().label}<#else>—</#if></td>
                                     <td>

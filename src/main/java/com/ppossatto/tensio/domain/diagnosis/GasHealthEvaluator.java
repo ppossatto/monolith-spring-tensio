@@ -44,6 +44,19 @@ public class GasHealthEvaluator {
     return result;
   }
 
+  /// Returns the level of one gas concentration against its `alert` / `danger` limits (rates are ignored).
+  ///
+  /// @param gas   the gas
+  /// @param value the concentration in ppm, may be `null`
+  /// @return the level; OK when the value or the limits are missing
+  public HealthStatus level(Gas gas, BigDecimal value) {
+    var limit = props.limits().get(gas);
+    if (limit == null || value == null) {
+      return HealthStatus.OK;
+    }
+    return byThreshold(value, limit.alert(), limit.danger());
+  }
+
   private static HealthStatus byThreshold(BigDecimal v, BigDecimal alert, BigDecimal danger) {
     if (danger != null && v.compareTo(danger) >= 0) return HealthStatus.DANGER;
     if (alert != null && v.compareTo(alert) >= 0) return HealthStatus.ALERT;
