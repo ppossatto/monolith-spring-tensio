@@ -3,6 +3,7 @@ package com.ppossatto.tensio.config;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +16,8 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 public class SecurityConfig {
 
   /// Security rules: login page, static resources, health check and error page are public; user pages
-  /// require `ADMIN`; everything else requires authentication. Users are loaded by
+  /// and the substation / transformer forms (and their POSTs) require `ADMIN`; everything else requires
+  /// authentication. Users are loaded by
   /// {@link com.ppossatto.tensio.service.AccountUserDetailsService}.
   /// Anonymous HTMX requests get `401` with an `HX-Redirect` header to the login page, any other anonymous
   /// request is redirected to it.
@@ -30,6 +32,10 @@ public class SecurityConfig {
           .requestMatchers("/login", "/webjars/**", "/css/**", "/js/**", "/fonts/**", "/actuator/health", "/error")
           .permitAll()
           .requestMatchers("/users/**").hasRole("ADMIN")
+          .requestMatchers("/substations/new", "/substations/*/edit", "/transformers/new", "/transformers/*/edit")
+          .hasRole("ADMIN")
+          .requestMatchers(HttpMethod.POST, "/substations", "/substations/*", "/transformers", "/transformers/*")
+          .hasRole("ADMIN")
           .anyRequest().authenticated()
        ).formLogin(form -> form
           .loginPage("/login")

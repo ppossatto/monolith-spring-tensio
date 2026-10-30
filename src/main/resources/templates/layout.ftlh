@@ -85,6 +85,12 @@
     </nav>
     </#if>
     <main<#if mainClass?has_content> class="${mainClass}"</#if>>
+      <#if message??>
+        <div class="alert alert-success alert-dismissible fade show" role="status">
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      </#if>
       <#nested>
     </main>
   </div>

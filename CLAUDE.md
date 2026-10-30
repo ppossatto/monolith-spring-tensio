@@ -50,7 +50,8 @@ Base package: `com.ppossatto.tensio`
 | `entity`                | JPA entities only (persistence mapping, no business logic).                    |
 | `repository`            | Spring Data repositories.                                                      |
 | `repository/projection` | Read-only query projections (JPQL constructor expressions).                    |
-| `mapper`                | MapStruct mappers between entities and domain types.                           |
+| `form`                  | Input DTOs of form submissions (JavaBeans with Bean Validation), used by controllers and services. |
+| `mapper`                | MapStruct mappers between entities, domain types and forms.                    |
 | `config`                | Spring configuration (security, JPA, controller advice).                       |
 
 Rules:

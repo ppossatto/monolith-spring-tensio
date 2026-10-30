@@ -15,9 +15,16 @@
 <#assign longitude = s.longitude()???then(s.longitude()?string["0.0000000"], "")>
 
 <@layout.page title="Substation ${s.acronym()}" active="substations">
-    <a href="<@spring.url '/substations'/>" class="d-inline-flex align-items-center gap-1 mb-3 small">
-        <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to substations
-    </a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="<@spring.url '/substations'/>" class="d-inline-flex align-items-center gap-1 small">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to substations
+        </a>
+        <#if isAdmin!false>
+            <a href="<@spring.url '/substations/${s.id()?c}/edit'/>" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil" aria-hidden="true"></i> Edit
+            </a>
+        </#if>
+    </div>
 
     <form class="d-flex flex-column gap-4" aria-label="Substation ${s.acronym()}">
         <section class="card">
@@ -43,7 +50,13 @@
     <section class="card mt-4" aria-labelledby="substation-transformers-title">
         <div class="card-header d-flex align-items-center gap-2">
             <i class="bi bi-lightning-charge" aria-hidden="true"></i>
-            <h2 id="substation-transformers-title" class="h6 mb-0">Transformers</h2>
+            <h2 id="substation-transformers-title" class="h6 mb-0 me-auto">Transformers</h2>
+            <#if isAdmin!false>
+                <a href="<@spring.url '/transformers/new?substationId=${s.id()?c}'/>"
+                   class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i> Add transformer
+                </a>
+            </#if>
         </div>
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
