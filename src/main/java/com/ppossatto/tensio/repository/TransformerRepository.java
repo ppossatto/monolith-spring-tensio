@@ -70,6 +70,11 @@ public interface TransformerRepository extends JpaRepository<TransformerEntity, 
             """)
   List<TransformerOption> findRadarOptions(TransformerStatus excluded);
 
+  /// Transformers of a substation, ordered by criticality, then worst health, then tag.
+  @Query(DASHBOARD_ROWS_SELECT + "and s.id = :substationId "
+     + "order by t.criticality desc, coalesce(l.healthRank, -1) desc, t.tag")
+  List<TransformerRow> findDashboardRowsBySubstation(TransformerStatus excluded, Long substationId);
+
   @EntityGraph(attributePaths = "substation")
   Optional<TransformerEntity> findWithSubstationById(Long id);
 }

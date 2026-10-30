@@ -24,7 +24,7 @@
             </#list>
         </div>
 
-        <div class="input-group input-group-sm transformer-search">
+        <div class="input-group input-group-sm search-field">
             <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
             <input type="search" name="q" value="${q}" maxlength="50" class="form-control"
                    placeholder="Search by tag" aria-label="Search by tag" autocomplete="off">

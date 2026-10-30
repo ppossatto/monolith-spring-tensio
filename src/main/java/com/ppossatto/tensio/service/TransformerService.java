@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Locale;
 import java.util.Optional;
 
 import static com.ppossatto.tensio.domain.transformer.TransformerStatus.DECOMMISSIONED;
@@ -41,7 +40,7 @@ public class TransformerService {
   /// @return the requested page
   public Page<TransformerRow> list(HealthStatus health, String tag, int page) {
     var pageable = PageRequest.of(Math.max(page, 0), PAGE_SIZE);
-    var pattern = containsPattern(tag);
+    var pattern = SearchPatterns.contains(tag);
     return health == null
        ? transformers.findDashboardRows(DECOMMISSIONED, pattern, pageable)
        : transformers.findDashboardRowsWithHealth(DECOMMISSIONED, health, pattern, pageable);
@@ -64,17 +63,5 @@ public class TransformerService {
   /// @return the latest diagnosis, empty when the transformer has no diagnosed analysis
   public Optional<LatestDiagnosis> latestDiagnosis(Long transformerId) {
     return latestDiagnoses.findById(transformerId).map(diagnosisMapper::toDomain);
-  }
-
-  /// Builds a lower-case LIKE pattern that matches values containing `text`, escaping `!`, `%` and `_` with `!`.
-  private static String containsPattern(String text) {
-    if (text == null || text.isBlank()) {
-      return "%";
-    }
-    var escaped = text.strip().toLowerCase(Locale.ROOT)
-       .replace("!", "!!")
-       .replace("%", "!%")
-       .replace("_", "!_");
-    return "%" + escaped + "%";
   }
 }
