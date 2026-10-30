@@ -55,7 +55,7 @@
                 </thead>
                 <tbody>
                 <#list transformers as t>
-                    <tr>
+                    <tr data-href="<@spring.url '/transformers/${t.id()?c}'/>">
                         <td><a href="<@spring.url '/transformers/${t.id()?c}'/>">${t.tag()}</a></td>
                         <td class="text-end">${(t.ratedPowerMva()?string["0.##"])!'—'}</td>
                         <td class="text-center">${t.criticality()}</td>

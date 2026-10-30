@@ -1,4 +1,5 @@
 <#import "/spring.ftl" as spring>
+<#import "/_pagination.ftlh" as pagination>
 <#assign badge = {"OK": "success", "ALERT": "warning", "DANGER": "danger"}>
 <#assign filterQuery = "">
 <#if health??><#assign filterQuery = filterQuery + "&health=" + health.name()></#if>
@@ -15,7 +16,7 @@
             </thead>
             <tbody>
             <#list transformers.content as t>
-                <tr>
+                <tr data-href="<@spring.url '/transformers/${t.id()?c}'/>">
                     <td><a href="<@spring.url '/transformers/${t.id()?c}'/>">${t.tag()}</a></td>
                     <td>${t.substation()}</td>
                     <td class="text-end">${(t.ratedPowerMva()?string["0.##"])!'—'}</td>
@@ -38,15 +39,5 @@
         </table>
     </div>
 
-    <#if transformers.totalPages gt 1>
-        <nav class="d-flex justify-content-between align-items-center p-2">
-            <button class="btn btn-sm btn-outline-secondary" <#if !transformers.hasPrevious()>disabled</#if>
-                    hx-get="<@spring.url '/transformers?page=${(transformers.number - 1)?c}${filterQuery}'/>"
-                    hx-target="#transformers" hx-swap="outerHTML">Previous</button>
-            <span class="small">${transformers.number + 1} / ${transformers.totalPages}</span>
-            <button class="btn btn-sm btn-outline-secondary" <#if !transformers.hasNext()>disabled</#if>
-                    hx-get="<@spring.url '/transformers?page=${(transformers.number + 1)?c}${filterQuery}'/>"
-                    hx-target="#transformers" hx-swap="outerHTML">Next</button>
-        </nav>
-    </#if>
+    <@pagination.pager page=transformers path="/transformers" query=filterQuery target="transformers"/>
 </div>

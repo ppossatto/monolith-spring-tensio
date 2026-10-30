@@ -23,6 +23,7 @@
     <script src="<@spring.url '/webjars/htmx.org/2.0.11/dist/htmx.min.js'/>" defer></script>
     <script src="<@spring.url '/webjars/chart.js/4.5.1/dist/chart.umd.js'/>" defer></script>
     <script src="<@spring.url '/js/gas-chart.js'/>" defer></script>
+    <script src="<@spring.url '/js/table-rows.js'/>" defer></script>
   </head>
   <body<#if bodyClass?has_content> class="${bodyClass}"</#if> <#if _csrf??>hx-headers='{"${_csrf.headerName}": "${_csrf.token}"}'</#if>>
 

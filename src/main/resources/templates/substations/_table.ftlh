@@ -1,4 +1,5 @@
 <#import "/spring.ftl" as spring>
+<#import "/_pagination.ftlh" as pagination>
 <#assign filterQuery = "">
 <#if attention><#assign filterQuery = filterQuery + "&attention=true"></#if>
 <#if q?has_content><#assign filterQuery = filterQuery + "&q=" + q?url("UTF-8")></#if>
@@ -14,7 +15,7 @@
             </thead>
             <tbody>
             <#list substations.content as s>
-                <tr>
+                <tr data-href="<@spring.url '/substations/${s.id()?c}'/>">
                     <td><a href="<@spring.url '/substations/${s.id()?c}'/>">${s.acronym()}</a></td>
                     <td>${s.name()!'—'}</td>
                     <td><#if s.city()??>${s.city()}<#if s.state()??> / ${s.state()}</#if><#else>—</#if></td>
@@ -43,15 +44,5 @@
         </table>
     </div>
 
-    <#if substations.totalPages gt 1>
-        <nav class="d-flex justify-content-between align-items-center p-2">
-            <button class="btn btn-sm btn-outline-secondary" <#if !substations.hasPrevious()>disabled</#if>
-                    hx-get="<@spring.url '/substations?page=${(substations.number - 1)?c}${filterQuery}'/>"
-                    hx-target="#substations" hx-swap="outerHTML">Previous</button>
-            <span class="small">${substations.number + 1} / ${substations.totalPages}</span>
-            <button class="btn btn-sm btn-outline-secondary" <#if !substations.hasNext()>disabled</#if>
-                    hx-get="<@spring.url '/substations?page=${(substations.number + 1)?c}${filterQuery}'/>"
-                    hx-target="#substations" hx-swap="outerHTML">Next</button>
-        </nav>
-    </#if>
+    <@pagination.pager page=substations path="/substations" query=filterQuery target="substations"/>
 </div>
