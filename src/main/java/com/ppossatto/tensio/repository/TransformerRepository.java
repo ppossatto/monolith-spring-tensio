@@ -14,6 +14,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
+/// Transformer queries. In every query `:excluded` is the transformer status left out (decommissioned) and
+/// `:tagPattern` a lower-case LIKE pattern using `!` as escape.
 public interface TransformerRepository extends JpaRepository<TransformerEntity, Long> {
 
   /// Dashboard rows of non-decommissioned transformers, without ordering.
@@ -31,12 +33,23 @@ public interface TransformerRepository extends JpaRepository<TransformerEntity, 
   String TAG_FILTER = "and lower(t.tag) like :tagPattern escape '!' ";
 
   /// Transformers whose tag matches `tagPattern`, ordered by criticality, then worst health, then tag.
+  ///
+  /// @param excluded   transformer status left out
+  /// @param tagPattern lower-case LIKE pattern, `!` as escape
+  /// @param pageable   requested page
+  /// @return the page of transformers
   @Query(value = DASHBOARD_ROWS_SELECT + TAG_FILTER
      + "order by t.criticality desc, coalesce(l.healthRank, -1) desc, t.tag",
      countQuery = "select count(t) from TransformerEntity t where t.status <> :excluded " + TAG_FILTER)
   Page<TransformerRow> findDashboardRows(TransformerStatus excluded, String tagPattern, Pageable pageable);
 
   /// Transformers in the given health status whose tag matches `tagPattern`, ordered by criticality, then tag.
+  ///
+  /// @param excluded   transformer status left out
+  /// @param health     health status of the latest diagnosis
+  /// @param tagPattern lower-case LIKE pattern, `!` as escape
+  /// @param pageable   requested page
+  /// @return the page of transformers
   @Query(value = DASHBOARD_ROWS_SELECT + TAG_FILTER + "and l.healthStatus = :health order by t.criticality desc, t.tag",
      countQuery = """
             select count(t) from TransformerEntity t
@@ -48,9 +61,17 @@ public interface TransformerRepository extends JpaRepository<TransformerEntity, 
 
   /// Ordered by worst health (DANGER, ALERT, OK, no diagnosis), then criticality, then tag.
   /// Returns a list so no count query is executed.
+  ///
+  /// @param excluded transformer status left out
+  /// @param pageable how many transformers to return (only the first page is used)
+  /// @return the transformers
   @Query(DASHBOARD_ROWS_SELECT + "order by coalesce(l.healthRank, -1) desc, t.criticality desc, t.tag")
   List<TransformerRow> findDashboardRowsOrderedByHealth(TransformerStatus excluded, Pageable pageable);
 
+  /// Number of transformers per health status, from their latest diagnosis.
+  ///
+  /// @param excluded transformer status left out
+  /// @return one entry per health status that has transformers
   @Query("""
             select new com.ppossatto.tensio.repository.projection.HealthCount(l.healthStatus, count(l))
             from TransformerLatestDiagnosis l
@@ -62,10 +83,18 @@ public interface TransformerRepository extends JpaRepository<TransformerEntity, 
 
 
   /// Transformers of a substation, ordered by criticality, then worst health, then tag.
+  ///
+  /// @param excluded     transformer status left out
+  /// @param substationId the substation id
+  /// @return the transformers of the substation
   @Query(DASHBOARD_ROWS_SELECT + "and s.id = :substationId "
      + "order by t.criticality desc, coalesce(l.healthRank, -1) desc, t.tag")
   List<TransformerRow> findDashboardRowsBySubstation(TransformerStatus excluded, Long substationId);
 
+  /// Returns a transformer with its substation loaded in the same query.
+  ///
+  /// @param id the transformer id
+  /// @return the transformer, empty when it does not exist
   @EntityGraph(attributePaths = "substation")
   Optional<TransformerEntity> findWithSubstationById(Long id);
 }

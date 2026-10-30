@@ -12,6 +12,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 
+/// JPA mapping of the `substation` table. See {@link com.ppossatto.tensio.domain.substation.Substation}.
 @Entity
 @Table(name = "substation")
 @Getter

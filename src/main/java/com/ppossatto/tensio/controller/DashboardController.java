@@ -6,12 +6,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/// Dashboard (`/`): health summary, highlighted transformers, substations and latest analyses.
 @Controller
 @RequiredArgsConstructor
 class DashboardController {
 
   private final DashboardService dashboard;
 
+  /// Shows the dashboard.
+  ///
+  /// @param model the view model
+  /// @return the `dashboard/index` view
   @GetMapping("/")
   String index(Model model) {
     model.addAttribute("summary", dashboard.summary());

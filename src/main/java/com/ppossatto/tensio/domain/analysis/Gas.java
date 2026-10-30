@@ -3,6 +3,8 @@ package com.ppossatto.tensio.domain.analysis;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/// Gases measured by the dissolved gas analysis.
+/// Combustible gases are the ones summed in the TDCG (total dissolved combustible gas).
 @RequiredArgsConstructor
 @Getter
 public enum Gas {

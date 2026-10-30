@@ -19,6 +19,7 @@ import java.util.List;
 
 import static com.ppossatto.tensio.domain.transformer.TransformerStatus.DECOMMISSIONED;
 
+/// Substation use cases: list, detail and transformers of a substation.
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

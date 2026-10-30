@@ -5,6 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.math.BigDecimal;
 import java.util.Map;
 
+/// DGA limits per gas, bound from `tensio.dga.limits` in `application.yaml`.
+///
+/// @param limits limits by gas; a gas without an entry is ignored by the health evaluation and the charts
 @ConfigurationProperties("tensio.dga")
 public record DgaLimitsProperties(Map<Gas, GasLimit> limits) {
 

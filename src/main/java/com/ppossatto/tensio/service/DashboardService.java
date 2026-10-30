@@ -20,6 +20,7 @@ import java.util.Map;
 
 import static com.ppossatto.tensio.domain.transformer.TransformerStatus.DECOMMISSIONED;
 
+/// Builds the dashboard data.
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -33,6 +34,9 @@ public class DashboardService {
   private final SubstationRepository substations;
   private final AnalysisRepository analyses;
 
+  /// Counts non-decommissioned transformers per health status.
+  ///
+  /// @return the counts; statuses without transformers are 0
   public HealthSummary summary() {
     Map<HealthStatus, Long> counts = new EnumMap<>(HealthStatus.class);
     transformers.countByHealth(DECOMMISSIONED).forEach(c -> counts.put(c.status(), c.total()));

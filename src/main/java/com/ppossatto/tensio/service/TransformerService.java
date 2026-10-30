@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static com.ppossatto.tensio.domain.transformer.TransformerStatus.DECOMMISSIONED;
 
+/// Transformer use cases: list, detail and latest diagnosis.
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

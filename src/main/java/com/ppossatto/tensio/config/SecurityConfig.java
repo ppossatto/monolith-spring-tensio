@@ -14,6 +14,13 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 @Configuration
 public class SecurityConfig {
 
+  /// Security rules: login page, static resources, health check and error page are public; everything else
+  /// requires authentication. Anonymous HTMX requests get `401` with an `HX-Redirect` header to the login page,
+  /// any other anonymous request is redirected to it.
+  ///
+  /// @param http the security builder
+  /// @return the filter chain
+  /// @throws Exception when the configuration is invalid
   @Bean
   SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
@@ -43,6 +50,10 @@ public class SecurityConfig {
     return http.build();
   }
 
+  /// Delegating encoder: hashes new passwords with the Spring Security default and accepts stored ids such as
+  /// `{noop}` or `{bcrypt}`.
+  ///
+  /// @return the password encoder
   @Bean
   PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();

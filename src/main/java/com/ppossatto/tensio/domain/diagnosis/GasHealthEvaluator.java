@@ -10,12 +10,19 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.temporal.ChronoUnit;
 
+/// Evaluates the health status of an analysis from the configured gas limits and generation rates.
 @Component
 @RequiredArgsConstructor
 public class GasHealthEvaluator {
 
   private final DgaLimitsProperties props;
 
+  /// Returns the worst status among all gases, comparing each concentration with its `alert` / `danger`
+  /// limits and, when a previous analysis exists, the daily generation rate with `alertRate` / `dangerRate`.
+  ///
+  /// @param current  the analysis to evaluate
+  /// @param previous the previous analysis of the same transformer, `null` when there is none
+  /// @return the health status
   public HealthStatus evaluate(Analysis current, Analysis previous) {
     HealthStatus result = HealthStatus.OK;
     for (Gas gas : Gas.values()) {

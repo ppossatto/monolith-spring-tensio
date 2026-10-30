@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/// Substation pages: list (`/substations`) and read-only detail (`/substations/{id}`).
 @Controller
 @RequestMapping("/substations")
 @RequiredArgsConstructor
@@ -16,6 +17,13 @@ class SubstationController {
 
   private final SubstationService substations;
 
+  /// Shows the substation list page.
+  ///
+  /// @param attention only substations with at least one transformer in DANGER
+  /// @param q         part of the acronym or name to search for
+  /// @param page      zero-based page number
+  /// @param model     the view model
+  /// @return the `substations/index` view
   @GetMapping
   String index(@RequestParam(defaultValue = "false") boolean attention,
                @RequestParam(defaultValue = "") String q,
@@ -25,6 +33,14 @@ class SubstationController {
     return "substations/index";
   }
 
+  /// Returns only the table, for HTMX requests (filter, search, pagination).
+  /// History-restore requests get the full page from {@link #index} instead.
+  ///
+  /// @param attention only substations with at least one transformer in DANGER
+  /// @param q         part of the acronym or name to search for
+  /// @param page      zero-based page number
+  /// @param model     the view model
+  /// @return the `substations/_table` partial
   @GetMapping(headers = {"HX-Request", "!HX-History-Restore-Request"})
   String table(@RequestParam(defaultValue = "false") boolean attention,
                @RequestParam(defaultValue = "") String q,
@@ -34,6 +50,11 @@ class SubstationController {
     return "substations/_table";
   }
 
+  /// Shows a substation and its transformers.
+  ///
+  /// @param id    the substation id
+  /// @param model the view model
+  /// @return the `substations/detail` view; 404 when the substation does not exist
   @GetMapping("/{id}")
   String detail(@PathVariable Long id, Model model) {
     model.addAttribute("substation", substations.find(id));

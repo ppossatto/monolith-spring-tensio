@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/// Transformer pages: list (`/transformers`), read-only detail (`/transformers/{id}`) and PDF export.
 @Controller
 @RequestMapping("/transformers")
 @RequiredArgsConstructor
@@ -25,6 +26,13 @@ class TransformerController {
   private final TransformerReportService reports;
   private final GasProfileService gasProfiles;
 
+  /// Shows the transformer list page.
+  ///
+  /// @param health only transformers in this health status, all when absent
+  /// @param q      part of the tag to search for
+  /// @param page   zero-based page number
+  /// @param model  the view model
+  /// @return the `transformers/index` view
   @GetMapping
   String index(@RequestParam(required = false) HealthStatus health,
                @RequestParam(defaultValue = "") String q,
@@ -34,6 +42,14 @@ class TransformerController {
     return "transformers/index";
   }
 
+  /// Returns only the table, for HTMX requests (filter, search, pagination).
+  /// History-restore requests get the full page from {@link #index} instead.
+  ///
+  /// @param health only transformers in this health status, all when absent
+  /// @param q      part of the tag to search for
+  /// @param page   zero-based page number
+  /// @param model  the view model
+  /// @return the `transformers/_table` partial
   @GetMapping(headers = {"HX-Request", "!HX-History-Restore-Request"})
   String table(@RequestParam(required = false) HealthStatus health,
                @RequestParam(defaultValue = "") String q,
@@ -43,6 +59,11 @@ class TransformerController {
     return "transformers/_table";
   }
 
+  /// Shows a transformer: current condition, gas profile charts and all its data.
+  ///
+  /// @param id    the transformer id
+  /// @param model the view model
+  /// @return the `transformers/detail` view; 404 when the transformer does not exist
   @GetMapping("/{id}")
   String detail(@PathVariable Long id, Model model) {
     model.addAttribute("transformer", transformers.find(id));
@@ -51,6 +72,10 @@ class TransformerController {
     return "transformers/detail";
   }
 
+  /// Downloads the transformer data sheet as PDF.
+  ///
+  /// @param id the transformer id
+  /// @return the PDF as an attachment named `transformer-<tag>.pdf`; 404 when the transformer does not exist
   @GetMapping("/{id}/pdf")
   ResponseEntity<byte[]> pdf(@PathVariable Long id) {
     var file = reports.transformerPdf(id);

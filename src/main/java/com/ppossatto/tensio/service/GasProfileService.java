@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+/// Builds the gas profile charts of a transformer.
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

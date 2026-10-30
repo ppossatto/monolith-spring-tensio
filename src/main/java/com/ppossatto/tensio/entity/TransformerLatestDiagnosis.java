@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import lombok.*;
 import org.hibernate.annotations.Immutable;
 
+/// Read-only mapping of the `transformer_latest_diagnosis` view: diagnosis of the most recent analysis of each
+/// transformer. `healthRank` is 2 for DANGER, 1 for ALERT and 0 for OK, for ordering.
 @Entity
 @Immutable
 @Table(name = "transformer_latest_diagnosis")

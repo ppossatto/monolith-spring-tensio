@@ -39,16 +39,32 @@ public interface SubstationRepository extends JpaRepository<SubstationEntity, Lo
   String ATTENTION_FIRST = "order by " + ATTENTION_COUNT + " desc, s.acronym";
 
   /// Every substation, substations needing attention first.
+  ///
+  /// @param excluded  transformer status left out of the counts
+  /// @param attention health status counted as "needs attention"
+  /// @return all substations
   @Query(SUMMARY_SELECT + GROUP_BY + ATTENTION_FIRST)
   List<SubstationRow> findSummaries(TransformerStatus excluded, HealthStatus attention);
 
   /// Substations whose acronym or name matches `namePattern`, needing attention first.
+  ///
+  /// @param excluded    transformer status left out of the counts
+  /// @param attention   health status counted as "needs attention"
+  /// @param namePattern lower-case LIKE pattern, `!` as escape
+  /// @param pageable    requested page
+  /// @return the page of substations
   @Query(value = SUMMARY_SELECT + NAME_FILTER + GROUP_BY + ATTENTION_FIRST,
      countQuery = "select count(s) from SubstationEntity s " + NAME_FILTER)
   Page<SubstationRow> findSummaries(TransformerStatus excluded, HealthStatus attention, String namePattern,
                                     Pageable pageable);
 
   /// Substations matching `namePattern` with at least one transformer in the `:attention` health status.
+  ///
+  /// @param excluded    transformer status left out of the counts
+  /// @param attention   health status counted as "needs attention"
+  /// @param namePattern lower-case LIKE pattern, `!` as escape
+  /// @param pageable    requested page
+  /// @return the page of substations needing attention
   @Query(value = SUMMARY_SELECT + NAME_FILTER + GROUP_BY + "having " + ATTENTION_COUNT + " > 0 " + ATTENTION_FIRST,
      countQuery = """
             select count(distinct s.id) from SubstationEntity s
