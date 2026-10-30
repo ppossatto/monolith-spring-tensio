@@ -16,6 +16,11 @@ Tensio is a monolithic Spring MVC application with server-side rendering.
 - All code is written in English: class, method, variable and constant names, Javadoc, comments, log messages, commit messages and pull request descriptions.
 - Conversations with the maintainer may be in Portuguese.
 
+## Build and code quality
+
+- `./mvnw verify` runs, in order: Enforcer (Java 25+, Maven 3.9+), Checkstyle (`config/checkstyle/checkstyle.xml`, warnings only), unit tests (Surefire), integration and Playwright tests (Failsafe) and the JaCoCo report (`target/site/jacoco/index.html`, unit + integration coverage).
+- Keep new code free of Checkstyle warnings: 2-space indentation, 3-space continuation lines, 120 columns, braces on every `if` / loop.
+
 ## Documentation
 
 - Write Javadoc whenever possible: every public and package-private class, record, interface, enum and method, plus non-obvious private methods and constants.
@@ -76,3 +81,8 @@ Rules:
 - `dev`: local database and dummy data, including users (`admin@tensio.local` / `admin`); SMTP to Mailpit (`localhost:1025`).
 - `test`: used by the test suite (Testcontainers); no dummy data, only the small fixture in `src/test/resources/db/test` (test users, TT-01..TT-12, TSA/TSB/TSC). Its expected numbers are described at the top of `V1001__test_data.sql` and in `TestData`; keep them in sync when the fixture changes.
 - `tls`: HTTPS served by the application; combine with another profile (`dev,tls`). Certificates come from the `TLS_CERTIFICATE` / `TLS_PRIVATE_KEY` environment variables and are never committed.
+
+## Docker
+
+- `Dockerfile`: multi-stage, `eclipse-temurin:25-jdk-alpine` builds with `./mvnw` (tests skipped), `eclipse-temurin:25-jre-alpine` runs the extracted Spring Boot layers as a non-root user. `fontconfig` and `ttf-dejavu` are required by JasperReports.
+- `compose.yaml`: services without a compose profile are started by the Spring Boot Docker Compose support in dev; the `app` service only with `docker compose --profile app up --build`.

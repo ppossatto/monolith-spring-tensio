@@ -22,7 +22,7 @@
                     <td class="text-end">${s.transformerCount()}</td>
                     <td>
                         <#if s.active()>
-                            <span class="badge text-bg-light border">Active</span>
+                            <span class="badge bg-body-tertiary text-body border">Active</span>
                         <#else>
                             <span class="badge text-bg-secondary">Inactive</span>
                         </#if>

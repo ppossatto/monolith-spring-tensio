@@ -135,7 +135,7 @@
                                                 ${s.dangerCount()} in danger
                                             </span>
                                         </#if>
-                                        <span class="badge rounded-pill text-bg-light border text-nowrap">
+                                        <span class="badge rounded-pill bg-body-tertiary text-body border text-nowrap">
                                             ${s.transformerCount()} transformer<#if s.transformerCount() != 1>s</#if>
                                         </span>
                                     </div>
@@ -172,7 +172,7 @@
                                             <#assign hs = a.healthStatus().name()>
                                             <span class="badge text-bg-${badge[hs]}">${hs}</span>
                                         <#else>
-                                            <span class="text-muted">Pending</span>
+                                            <span class="text-muted">—</span>
                                         </#if>
                                     </td>
                                 </tr>
