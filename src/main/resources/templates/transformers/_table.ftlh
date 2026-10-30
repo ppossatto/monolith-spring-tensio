@@ -1,5 +1,7 @@
 <#import "/spring.ftl" as spring>
 <#assign badge = {"OK": "success", "ALERT": "warning", "DANGER": "danger"}>
+<#assign healthQuery = "">
+<#if health??><#assign healthQuery = "&health=" + health.name()></#if>
 
 <div id="transformers">
     <div class="table-responsive">
@@ -13,7 +15,7 @@
             <tbody>
             <#list transformers.content as t>
                 <tr>
-                    <td>${t.tag()}</td>
+                    <td><a href="<@spring.url '/transformers/${t.id()?c}'/>">${t.tag()}</a></td>
                     <td>${t.substation()}</td>
                     <td class="text-end">${(t.ratedPowerMva()?string["0.##"])!'—'}</td>
                     <td class="text-center">${t.criticality()}</td>
@@ -29,7 +31,7 @@
                     <td>${t.lastSampleDate()!'—'}</td>
                 </tr>
             <#else>
-                <tr><td colspan="7" class="text-center text-muted">No transformers registered.</td></tr>
+                <tr><td colspan="7" class="text-center text-muted">No transformers found.</td></tr>
             </#list>
             </tbody>
         </table>
@@ -38,11 +40,11 @@
     <#if transformers.totalPages gt 1>
         <nav class="d-flex justify-content-between align-items-center p-2">
             <button class="btn btn-sm btn-outline-secondary" <#if !transformers.hasPrevious()>disabled</#if>
-                    hx-get="<@spring.url '/?page=${(transformers.number - 1)?c}'/>"
+                    hx-get="<@spring.url '/transformers?page=${(transformers.number - 1)?c}${healthQuery}'/>"
                     hx-target="#transformers" hx-swap="outerHTML">Previous</button>
             <span class="small">${transformers.number + 1} / ${transformers.totalPages}</span>
             <button class="btn btn-sm btn-outline-secondary" <#if !transformers.hasNext()>disabled</#if>
-                    hx-get="<@spring.url '/?page=${(transformers.number + 1)?c}'/>"
+                    hx-get="<@spring.url '/transformers?page=${(transformers.number + 1)?c}${healthQuery}'/>"
                     hx-target="#transformers" hx-swap="outerHTML">Next</button>
         </nav>
     </#if>

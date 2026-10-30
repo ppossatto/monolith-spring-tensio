@@ -14,22 +14,17 @@ class DashboardController {
   private final DashboardService dashboard;
 
   @GetMapping("/")
-  String index(@RequestParam(defaultValue = "0") int page, Model model) {
+  String index(Model model) {
     var options = dashboard.radarOptions();
     model.addAttribute("summary", dashboard.summary());
     model.addAttribute("highlights", dashboard.highlightedTransformers());
-    model.addAttribute("transformers", dashboard.transformers(page));
+    model.addAttribute("substations", dashboard.substations());
+    model.addAttribute("latestAnalyses", dashboard.latestAnalyses());
     model.addAttribute("radarOptions", options);
     if (!options.isEmpty()) {
       model.addAttribute("radar", dashboard.radar(options.getFirst().id()));
     }
     return "dashboard/index";
-  }
-
-  @GetMapping(value = "/", headers = {"HX-Request", "!HX-History-Restore-Request"})
-  String transformersPage(@RequestParam(defaultValue = "0") int page, Model model) {
-    model.addAttribute("transformers", dashboard.transformers(page));
-    return "dashboard/_transformers";
   }
 
   @GetMapping("/dashboard/radar")

@@ -1,0 +1,77 @@
+<#import "/spring.ftl" as spring>
+<#import "../layout.ftlh" as layout>
+
+<#assign badge = {"OK": "success", "ALERT": "warning", "DANGER": "danger"}>
+<#assign t = transformer>
+<#assign s = t.substation()>
+
+<#macro field id label value="" col="col-md-4">
+    <div class="${col}">
+        <label for="${id}" class="form-label small text-muted mb-1">${label}</label>
+        <input id="${id}" class="form-control" value="${value}" readonly>
+    </div>
+</#macro>
+
+<#assign finalFault = (diagnosis?? && diagnosis.finalFault()??)?then(diagnosis.finalFault().label, "")>
+<#assign lastSample = diagnosis???then(diagnosis.sampleDate(), "")>
+<#assign year = t.manufactureYear()???then(t.manufactureYear()?c, "")>
+<#assign ratedPower = t.ratedPowerMva()???then(t.ratedPowerMva()?string["0.##"] + " MVA", "")>
+<#assign primaryVoltage = t.primaryVoltageKv()???then(t.primaryVoltageKv()?string["0.##"] + " kV", "")>
+<#assign secondaryVoltage = t.secondaryVoltageKv()???then(t.secondaryVoltageKv()?string["0.##"] + " kV", "")>
+<#assign location = (s.city()!"") + s.state()???then(" / " + s.state(), "")>
+
+<@layout.page title="Transformer ${t.tag()}" active="transformers">
+    <a href="<@spring.url '/transformers'/>" class="d-inline-flex align-items-center gap-1 mb-3 small">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to transformers
+    </a>
+
+    <form class="d-flex flex-column gap-4" aria-label="Transformer ${t.tag()}">
+        <section class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="h6 mb-0">Current condition</h2>
+                <#if diagnosis??>
+                    <#assign hs = diagnosis.healthStatus().name()>
+                    <span class="badge text-bg-${badge[hs]}">${hs}</span>
+                <#else>
+                    <span class="badge text-bg-secondary">No data</span>
+                </#if>
+            </div>
+            <div class="card-body row g-3">
+                <@field id="final-fault" label="Final fault" value=finalFault col="col-md-8"/>
+                <@field id="last-sample" label="Last sample" value=lastSample/>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header"><h2 class="h6 mb-0">Identification</h2></div>
+            <div class="card-body row g-3">
+                <@field id="tag" label="Tag" value=t.tag()/>
+                <@field id="serial-number" label="Serial number" value=t.serialNumber()/>
+                <@field id="status" label="Status" value=t.status().name()/>
+                <@field id="manufacturer" label="Manufacturer" value=t.manufacturer()!""/>
+                <@field id="manufacture-year" label="Manufacture year" value=year/>
+                <@field id="commissioning-date" label="Commissioning date" value=t.commissioningDate()!""/>
+                <@field id="criticality" label="Criticality" value=t.criticality()?c/>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header"><h2 class="h6 mb-0">Electrical data</h2></div>
+            <div class="card-body row g-3">
+                <@field id="rated-power" label="Rated power" value=ratedPower/>
+                <@field id="primary-voltage" label="Primary voltage" value=primaryVoltage/>
+                <@field id="secondary-voltage" label="Secondary voltage" value=secondaryVoltage/>
+                <@field id="oil-type" label="Oil type" value=t.oilType().name()/>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header"><h2 class="h6 mb-0">Substation</h2></div>
+            <div class="card-body row g-3">
+                <@field id="substation-acronym" label="Acronym" value=s.acronym()/>
+                <@field id="substation-name" label="Name" value=s.name()!""/>
+                <@field id="substation-location" label="City / State" value=location/>
+            </div>
+        </section>
+    </form>
+</@layout.page>

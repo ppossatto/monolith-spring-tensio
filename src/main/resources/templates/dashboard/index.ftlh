@@ -3,11 +3,14 @@
 
 <#assign badge = {"OK": "success", "ALERT": "warning", "DANGER": "danger"}>
 
-<#macro card title value color>
+<#macro card title value color health>
     <div class="col-md-4">
         <div class="card text-bg-${color} h-100">
             <div class="card-body">
-                <h6 class="card-title text-uppercase mb-1">${title}</h6>
+                <h3 class="card-title h6 text-uppercase mb-1">
+                    <a href="<@spring.url '/transformers?health=${health}'/>"
+                       class="stretched-link text-reset text-decoration-none">${title}</a>
+                </h3>
                 <p class="display-6 mb-0">${value}</p>
             </div>
         </div>
@@ -20,7 +23,10 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
-                        <h6 class="mb-0">${t.tag()}</h6>
+                        <h4 class="h6 mb-0">
+                            <a href="<@spring.url '/transformers/${t.id()?c}'/>"
+                               class="stretched-link text-reset text-decoration-none">${t.tag()}</a>
+                        </h4>
                         <span class="small text-muted">${t.substation()}</span>
                     </div>
                     <#if t.healthStatus()??>
@@ -53,9 +59,9 @@
         </div>
         <div class="card-body">
             <div class="row g-3">
-                <@card "Healthy" summary.ok() "success"/>
-                <@card "Alert" summary.alert() "warning"/>
-                <@card "Danger" summary.danger() "danger"/>
+                <@card "Healthy" summary.ok() "success" "OK"/>
+                <@card "Alert" summary.alert() "warning" "ALERT"/>
+                <@card "Danger" summary.danger() "danger" "DANGER"/>
             </div>
 
             <#assign slides = highlights?chunk(3)>
@@ -101,20 +107,89 @@
         </div>
     </section>
 
-    <div class="row g-4">
-        <div class="col-lg-7">
-            <div class="card">
-                <div class="card-header">Transformers by priority</div>
-                <#include "_transformers.ftlh">
-            </div>
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <section class="card h-100" aria-labelledby="substations-title">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <i class="bi bi-building" aria-hidden="true"></i>
+                    <h2 id="substations-title" class="h6 mb-0">Substations</h2>
+                </div>
+                <#if substations?has_content>
+                    <ul class="list-group list-group-flush">
+                        <#list substations as s>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center gap-2">
+                                    <div>
+                                        <span class="fw-semibold">${s.acronym()}</span>
+                                        <#if s.name()??><span class="text-muted">· ${s.name()}</span></#if>
+                                        <#if s.city()??>
+                                            <div class="small text-muted">${s.city()}<#if s.state()??> / ${s.state()}</#if></div>
+                                        </#if>
+                                    </div>
+                                    <span class="badge text-bg-light border text-nowrap">
+                                        ${s.transformerCount()} transformer<#if s.transformerCount() != 1>s</#if>
+                                    </span>
+                                </div>
+                                <#if s.dangerCount() gt 0>
+                                    <div class="alert alert-danger d-flex align-items-center gap-2 py-2 px-3 mt-2 mb-0 small" role="status">
+                                        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                        Needs attention: ${s.dangerCount()} transformer<#if s.dangerCount() != 1>s</#if> in DANGER
+                                    </div>
+                                </#if>
+                            </li>
+                        </#list>
+                    </ul>
+                <#else>
+                    <p class="card-body text-muted mb-0">No substations registered.</p>
+                </#if>
+            </section>
         </div>
 
-        <div class="col-lg-5">
-            <div class="card">
+        <div class="col-lg-6">
+            <section class="card h-100" aria-labelledby="latest-analyses-title">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <i class="bi bi-clipboard-data" aria-hidden="true"></i>
+                    <h2 id="latest-analyses-title" class="h6 mb-0">Latest analyses</h2>
+                </div>
+                <#if latestAnalyses?has_content>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                            <tr><th>Date</th><th>Transformer</th><th>Fault</th><th>Health</th></tr>
+                            </thead>
+                            <tbody>
+                            <#list latestAnalyses as a>
+                                <tr>
+                                    <td class="text-nowrap">${a.sampleDate()}</td>
+                                    <td><a href="<@spring.url '/transformers/${a.transformerId()?c}'/>">${a.transformerTag()}</a></td>
+                                    <td><#if a.finalFault()??>${a.finalFault().label}<#else>—</#if></td>
+                                    <td>
+                                        <#if a.healthStatus()??>
+                                            <#assign hs = a.healthStatus().name()>
+                                            <span class="badge text-bg-${badge[hs]}">${hs}</span>
+                                        <#else>
+                                            <span class="text-muted">Pending</span>
+                                        </#if>
+                                    </td>
+                                </tr>
+                            </#list>
+                            </tbody>
+                        </table>
+                    </div>
+                <#else>
+                    <p class="card-body text-muted mb-0">No analyses registered yet.</p>
+                </#if>
+            </section>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <section class="card" aria-labelledby="gas-profile-title">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Gas profile</span>
+                    <h2 id="gas-profile-title" class="h6 mb-0">Gas profile</h2>
                     <#if radarOptions?has_content>
-                        <select name="transformerId" class="form-select form-select-sm w-auto"
+                        <select name="transformerId" aria-label="Transformer" class="form-select form-select-sm w-auto"
                                 hx-get="<@spring.url '/dashboard/radar'/>" hx-target="#radar" hx-swap="outerHTML">
                             <#list radarOptions as o>
                                 <option value="${o.id()?c}">${o.tag()}</option>
@@ -127,7 +202,7 @@
                 <#else>
                     <p class="card-body text-muted mb-0">No analyses registered yet.</p>
                 </#if>
-            </div>
+            </section>
         </div>
     </div>
 </@layout.page>
