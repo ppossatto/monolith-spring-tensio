@@ -1,0 +1,27 @@
+# HTTPS served by the application itself. Activate together with the environment profile,
+# e.g. SPRING_PROFILES_ACTIVE=dev,tls.
+#
+# Required environment variables (PEM files, outside the repository):
+#   TLS_CERTIFICATE  certificate chain, e.g. file:/etc/tensio/tls/fullchain.pem
+#   TLS_PRIVATE_KEY  unencrypted private key, e.g. file:/etc/tensio/tls/privkey.pem
+# The certificate is reloaded when the files change (e.g. after a renewal).
+server:
+  port: ${SERVER_PORT:8443}
+  ssl:
+    bundle: tensio
+  servlet:
+    session:
+      cookie:
+        secure: true
+
+spring:
+  ssl:
+    bundle:
+      pem:
+        tensio:
+          reload-on-update: true
+          keystore:
+            certificate: ${TLS_CERTIFICATE}
+            private-key: ${TLS_PRIVATE_KEY}
+          options:
+            enabled-protocols: TLSv1.3,TLSv1.2

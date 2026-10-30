@@ -16,6 +16,13 @@ Tensio is a monolithic Spring MVC application with server-side rendering.
 - All code is written in English: class, method, variable and constant names, Javadoc, comments, log messages, commit messages and pull request descriptions.
 - Conversations with the maintainer may be in Portuguese.
 
+## Documentation
+
+- Write Javadoc whenever possible: every public and package-private class, record, interface, enum and method, plus non-obvious private methods and constants.
+- Use Markdown documentation comments (`///`, JEP 467), as the existing code does; keep `@param`, `@return` and `@throws` tags.
+- Document what the code does and why (units, nullability, ordering, side effects), not how it is implemented line by line.
+- Record components are documented with `@param` on the record.
+
 ## Workflow
 
 1. Never push to `main`. Every change goes to a dedicated branch (`feat/...`, `fix/...`, `refactor/...`, `docs/...`) and is delivered as a pull request against `main`.
@@ -49,5 +56,13 @@ Rules:
 - Form submissions (POST) bind to an input DTO validated with `@Valid` (Bean Validation), never directly to a domain object or entity.
 - Exception: if a `@RestController` (JSON endpoint) is added, it uses dedicated response DTOs as its public contract.
 - JPQL constructor expressions must use the fully qualified name of a class that exists in `repository/projection`.
-- Views live in `src/main/resources/templates`. HTMX partials are prefixed with `_` (for example `_transformers.ftlh`).
-- Schema changes go through a new Flyway migration (`V<n>__description.sql`); never edit an applied migration.
+- Views live in `src/main/resources/templates`. HTMX partials are prefixed with `_` (for example `_table.ftlh`).
+- Schema changes go through a new Flyway migration (`V<n>__description.sql`) in `db/migration`; never edit an applied migration.
+- Dummy / sample data lives in `db/dev` and only runs with the `dev` profile. Versions are shared with `db/migration`, so pick a number no schema migration uses.
+
+## Profiles and configuration
+
+- `application.yaml`: settings for every environment (server, DGA limits).
+- `dev`: local database, in-memory admin user, dummy data.
+- `test`: used by the test suite (Testcontainers); no dummy data.
+- `tls`: HTTPS served by the application; combine with another profile (`dev,tls`). Certificates come from the `TLS_CERTIFICATE` / `TLS_PRIVATE_KEY` environment variables and are never committed.

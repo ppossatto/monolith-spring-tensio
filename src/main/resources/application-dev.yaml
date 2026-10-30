@@ -12,6 +12,12 @@ spring:
     password: ENC(dMvpCJ4t8Nb0/bhzVbgVnw==)
     url: jdbc:postgresql://localhost:5432/mydatabase
     driver-class-name: org.postgresql.Driver
+  flyway:
+    # Dummy data (db/dev) runs only with the "dev" profile. Versions are shared with db/migration,
+    # so a new dummy script must use a version number not taken by a schema migration.
+    locations:
+      - classpath:db/migration
+      - classpath:db/dev
   jpa:
     show-sql: true
     hibernate:
