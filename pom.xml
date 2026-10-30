@@ -31,6 +31,9 @@
 		<jasperreports.version>7.1.0</jasperreports.version>
 		<!-- Overrides the ecj 3.21 pulled by jasperreports-jdt, which predates Java 25 class files -->
 		<ecj.version>3.46.100</ecj.version>
+		<jacoco.version>0.8.15</jacoco.version>
+		<maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
+		<checkstyle.version>14.3.0</checkstyle.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -269,6 +272,86 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<executions>
 					<execution><goals><goal>integration-test</goal><goal>verify</goal></goals></execution>
+				</executions>
+			</plugin>
+			<!-- Build preconditions: Java 25+, Maven 3.9+, no duplicated dependency declarations -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>enforce-build-environment</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireJavaVersion>
+									<version>[${java.version},)</version>
+								</requireJavaVersion>
+								<requireMavenVersion>
+									<version>[3.9,)</version>
+								</requireMavenVersion>
+								<banDuplicatePomDependencyVersions/>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Coverage of unit and integration tests in one report: target/site/jacoco/index.html -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<!-- Sets ${argLine}, used by both Surefire and Failsafe; both append to target/jacoco.exec -->
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<excludes>
+						<!-- Generated MapStruct implementations -->
+						<exclude>**/*MapperImpl.class</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<!-- Code style (config/checkstyle/checkstyle.xml). Reports warnings without failing the build. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>${maven-checkstyle-plugin.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.puppycrawl.tools</groupId>
+						<artifactId>checkstyle</artifactId>
+						<version>${checkstyle.version}</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<configLocation>config/checkstyle/checkstyle.xml</configLocation>
+					<consoleOutput>true</consoleOutput>
+					<failOnViolation>false</failOnViolation>
+					<includeTestSourceDirectory>true</includeTestSourceDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>checkstyle</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>

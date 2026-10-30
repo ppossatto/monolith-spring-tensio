@@ -14,7 +14,8 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-/// JPA mapping of the `analysis` table (gas concentrations in ppm). See {@link com.ppossatto.tensio.domain.analysis.Analysis}.
+/// JPA mapping of the `analysis` table (gas concentrations in ppm).
+/// See {@link com.ppossatto.tensio.domain.analysis.Analysis}.
 @Entity
 @Table(name = "analysis")
 @Getter

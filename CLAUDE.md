@@ -16,6 +16,11 @@ Tensio is a monolithic Spring MVC application with server-side rendering.
 - All code is written in English: class, method, variable and constant names, Javadoc, comments, log messages, commit messages and pull request descriptions.
 - Conversations with the maintainer may be in Portuguese.
 
+## Build and code quality
+
+- `./mvnw verify` runs, in order: Enforcer (Java 25+, Maven 3.9+), Checkstyle (`config/checkstyle/checkstyle.xml`, warnings only), unit tests (Surefire), integration and Playwright tests (Failsafe) and the JaCoCo report (`target/site/jacoco/index.html`, unit + integration coverage).
+- Keep new code free of Checkstyle warnings: 2-space indentation, 3-space continuation lines, 120 columns, braces on every `if` / loop.
+
 ## Documentation
 
 - Write Javadoc whenever possible: every public and package-private class, record, interface, enum and method, plus non-obvious private methods and constants.
