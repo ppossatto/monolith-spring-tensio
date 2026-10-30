@@ -38,16 +38,16 @@ class AnalysisPagesIT {
   }
 
   @Test
-  void pendingStateListsAnalysesWithoutDiagnosis() throws Exception {
-    var page = page(get("/analyses").param("state", "PENDING"));
+  void everyAnalysisHasADiagnosis() throws Exception {
+    // TT-03's latest analysis is inserted without diagnosis; the startup backfill diagnoses it
+    var page = page(get("/analyses").param("q", "TT-03"));
 
-    assertThat(page.getContent()).extracting(AnalysisRow::transformerTag).containsExactly("TT-03");
-    assertThat(page.getContent().getFirst().healthStatus()).isNull();
+    assertThat(page.getContent()).hasSize(2).allSatisfy(row -> assertThat(row.healthStatus()).isNotNull());
   }
 
   @Test
   void healthStateFiltersByDiagnosis() throws Exception {
-    assertThat(page(get("/analyses").param("state", "DANGER")).getContent())
+    assertThat(page(get("/analyses").param("health", "DANGER")).getContent())
        .extracting(AnalysisRow::transformerTag).containsExactlyInAnyOrder("TT-01", "TT-12");
   }
 
@@ -63,7 +63,7 @@ class AnalysisPagesIT {
 
   @Test
   void emptyFiltersMeanAll() throws Exception {
-    var page = page(get("/analyses").param("state", "").param("from", "").param("to", "").param("q", ""));
+    var page = page(get("/analyses").param("health", "").param("from", "").param("to", "").param("q", ""));
 
     assertThat(page.getTotalElements()).isEqualTo(TestData.ANALYSES);
   }
@@ -94,8 +94,9 @@ class AnalysisPagesIT {
   }
 
   @Test
-  void detailOfPendingAnalysisSaysItIsNotDiagnosed() throws Exception {
-    assertThat(detail("TT-03")).contains("This analysis has not been diagnosed yet.");
+  void analysisInsertedWithoutDiagnosisIsDiagnosedOnStartup() throws Exception {
+    // below every alert limit: normal oil, methods not applied
+    assertThat(detail("TT-03")).contains("Normal", "OK", "Not applicable");
   }
 
   @Test

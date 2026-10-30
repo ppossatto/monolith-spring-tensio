@@ -172,7 +172,7 @@
                                             <#assign hs = a.healthStatus().name()>
                                             <span class="badge text-bg-${badge[hs]}">${hs}</span>
                                         <#else>
-                                            <span class="text-muted">Pending</span>
+                                            <span class="text-muted">—</span>
                                         </#if>
                                     </td>
                                 </tr>

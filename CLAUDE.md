@@ -38,6 +38,14 @@ Tensio is a monolithic Spring MVC application with server-side rendering.
    - MockMvc integration tests use `@WebIntegrationTest`; Playwright tests extend `PlaywrightSupport` and are named `*BrowserIT`.
 4. Keep changes small and focused; one concern per pull request.
 
+## Diagnosis (core rule)
+
+- Every analysis has a diagnosis with a final fault and a health status; "inconclusive" or "not performed" is impossible.
+- Analyses are only created through `AnalysisService.store` / `register`, which compute the diagnosis with `DiagnosisEngine` and store both in the same transaction. Never insert analyses another way in application code.
+- `DiagnosisEngine`: limits first (`GasHealthEvaluator`); below every alert limit → `NORMAL` / `OK` without applying the methods; otherwise Duval Triangle 1, IEC 60599 ratios, Rogers (IEEE C57.104) and Doernenburg, combined by `FinalFaultResolver` (weighted vote), with a documented fallback. Individual methods may be "not applicable" (`null`); the final fault never is.
+- Analyses inserted by SQL scripts without diagnosis are diagnosed on startup (`DiagnosisBackfill`).
+- After the commit, a summary e-mail goes to the user who submitted the analyses (`AnalysesDiagnosedEvent`, `DiagnosisMailService`). In dev, Mailpit catches it (http://localhost:8025).
+
 ## Architecture (MVC layers)
 
 Base package: `com.ppossatto.tensio`
@@ -70,7 +78,7 @@ Rules:
 ## Profiles and configuration
 
 - `application.yaml`: settings for every environment (server, DGA limits).
-- `dev`: local database and dummy data, including users (`admin@tensio.local` / `admin`).
+- `dev`: local database and dummy data, including users (`admin@tensio.local` / `admin`); SMTP to Mailpit (`localhost:1025`).
 - `test`: used by the test suite (Testcontainers); no dummy data, only the small fixture in `src/test/resources/db/test` (test users, TT-01..TT-12, TSA/TSB/TSC). Its expected numbers are described at the top of `V1001__test_data.sql` and in `TestData`; keep them in sync when the fixture changes.
 - `tls`: HTTPS served by the application; combine with another profile (`dev,tls`). Certificates come from the `TLS_CERTIFICATE` / `TLS_PRIVATE_KEY` environment variables and are never committed.
 

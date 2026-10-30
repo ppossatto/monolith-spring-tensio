@@ -2,6 +2,7 @@ package com.ppossatto.tensio.repository;
 
 import com.ppossatto.tensio.domain.diagnosis.HealthStatus;
 import com.ppossatto.tensio.repository.projection.HealthCount;
+import com.ppossatto.tensio.repository.projection.TransformerChoice;
 import com.ppossatto.tensio.repository.projection.TransformerRow;
 import com.ppossatto.tensio.entity.TransformerEntity;
 import com.ppossatto.tensio.domain.transformer.TransformerStatus;
@@ -109,4 +110,17 @@ public interface TransformerRepository extends JpaRepository<TransformerEntity, 
   /// @param serialNumber the serial number
   /// @return the transformer, empty when there is none
   Optional<TransformerEntity> findBySerialNumberIgnoreCase(String serialNumber);
+
+  /// Non-decommissioned transformers ordered by tag, for the analysis form.
+  ///
+  /// @param excluded transformer status left out
+  /// @return the transformers
+  @Query("""
+            select new com.ppossatto.tensio.repository.projection.TransformerChoice(t.id, t.tag, s.acronym)
+            from TransformerEntity t
+            join t.substation s
+            where t.status <> :excluded
+            order by t.tag
+            """)
+  List<TransformerChoice> findChoices(TransformerStatus excluded);
 }

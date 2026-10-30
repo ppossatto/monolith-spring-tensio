@@ -4,10 +4,11 @@
 -- Transformers TT-01..TT-12, two analyses each (60 and 10 days ago), all diagnosed except the latest of TT-03:
 --   TT-01 criticality 5, latest D2 / DANGER
 --   TT-02 criticality 4, latest T2 / ALERT
---   TT-03 latest analysis pending; its previous one is NORMAL / OK
+--   TT-03 latest analysis inserted without diagnosis: the startup backfill (DiagnosisBackfill) diagnoses it
+--         as NORMAL / OK, like its previous one
 --   TT-04..TT-11 NORMAL / OK
 --   TT-12 decommissioned, D2 / DANGER (left out of lists and counts)
--- Expected: OK 9, ALERT 1, DANGER 1; 24 analyses, 1 pending.
+-- Expected: OK 9, ALERT 1, DANGER 1; 24 analyses, all diagnosed after startup.
 -- Users (password "secret"): operator@tensio.local (USER), inactive@tensio.local (USER, inactive).
 
 insert into substation (name, acronym, city, state, latitude, longitude, active, created_at, updated_at)

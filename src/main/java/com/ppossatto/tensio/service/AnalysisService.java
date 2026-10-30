@@ -2,17 +2,26 @@ package com.ppossatto.tensio.service;
 
 import com.ppossatto.tensio.domain.analysis.Analysis;
 import com.ppossatto.tensio.domain.analysis.DgaLimitsProperties;
-import com.ppossatto.tensio.domain.analysis.DiagnosisState;
 import com.ppossatto.tensio.domain.analysis.Gas;
 import com.ppossatto.tensio.domain.analysis.GasReading;
+import com.ppossatto.tensio.domain.diagnosis.DiagnosedAnalysis;
 import com.ppossatto.tensio.domain.diagnosis.Diagnosis;
+import com.ppossatto.tensio.domain.diagnosis.DiagnosisEngine;
 import com.ppossatto.tensio.domain.diagnosis.GasHealthEvaluator;
+import com.ppossatto.tensio.domain.diagnosis.HealthStatus;
+import com.ppossatto.tensio.entity.AnalysisEntity;
+import com.ppossatto.tensio.entity.DiagnosisEntity;
+import com.ppossatto.tensio.form.AnalysisForm;
+import com.ppossatto.tensio.mapper.AnalysisFormMapper;
 import com.ppossatto.tensio.mapper.AnalysisMapper;
 import com.ppossatto.tensio.mapper.DiagnosisMapper;
 import com.ppossatto.tensio.repository.AnalysisRepository;
 import com.ppossatto.tensio.repository.DiagnosisRepository;
+import com.ppossatto.tensio.repository.TransformerRepository;
 import com.ppossatto.tensio.repository.projection.AnalysisRow;
+import com.ppossatto.tensio.repository.projection.TransformerChoice;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -25,7 +34,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-/// Analysis use cases: list with filters, detail with diagnosis and gas readings.
+import static com.ppossatto.tensio.domain.transformer.TransformerStatus.DECOMMISSIONED;
+
+/// Analysis use cases: list with filters, detail with diagnosis and gas readings, and registration.
+///
+/// Registering an analysis always stores its diagnosis in the same transaction (see {@link DiagnosisEngine}),
+/// so every analysis has a diagnosis.
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -38,20 +52,24 @@ public class AnalysisService {
 
   private final AnalysisRepository analyses;
   private final DiagnosisRepository diagnoses;
+  private final TransformerRepository transformers;
   private final AnalysisMapper analysisMapper;
   private final DiagnosisMapper diagnosisMapper;
+  private final AnalysisFormMapper formMapper;
+  private final DiagnosisEngine engine;
   private final GasHealthEvaluator evaluator;
   private final DgaLimitsProperties limits;
+  private final ApplicationEventPublisher events;
 
   /// Returns a page of analyses, newest first.
   ///
-  /// @param state only analyses in this diagnosis state, all when `null`
-  /// @param tag   case-insensitive part of the transformer tag; blank matches every tag
-  /// @param from  first sample date included, open when `null`
-  /// @param to    last sample date included, open when `null`; swapped with `from` when earlier
-  /// @param page  zero-based page number (negative values are treated as 0)
+  /// @param health only analyses diagnosed with this health status, all when `null`
+  /// @param tag    case-insensitive part of the transformer tag; blank matches every tag
+  /// @param from   first sample date included, open when `null`
+  /// @param to     last sample date included, open when `null`; swapped with `from` when earlier
+  /// @param page   zero-based page number (negative values are treated as 0)
   /// @return the requested page
-  public Page<AnalysisRow> list(DiagnosisState state, String tag, LocalDate from, LocalDate to, int page) {
+  public Page<AnalysisRow> list(HealthStatus health, String tag, LocalDate from, LocalDate to, int page) {
     var pageable = PageRequest.of(Math.max(page, 0), PAGE_SIZE);
     var pattern = SearchPatterns.contains(tag);
     var start = from == null ? MIN_DATE : from;
@@ -61,12 +79,9 @@ public class AnalysisService {
       start = end;
       end = swap;
     }
-    if (state == null) {
-      return analyses.findRows(pattern, start, end, pageable);
-    }
-    return state == DiagnosisState.PENDING
-       ? analyses.findPendingRows(pattern, start, end, pageable)
-       : analyses.findRowsWithHealth(pattern, start, end, state.healthStatus(), pageable);
+    return health == null
+       ? analyses.findRows(pattern, start, end, pageable)
+       : analyses.findRowsWithHealth(pattern, start, end, health, pageable);
   }
 
   /// Returns an analysis.
@@ -83,7 +98,8 @@ public class AnalysisService {
   /// Returns the diagnosis of an analysis.
   ///
   /// @param analysisId the analysis id
-  /// @return the diagnosis, empty when the analysis is not diagnosed yet
+  /// @return the diagnosis; empty only for analyses inserted outside the application and not yet
+  ///         diagnosed by {@link #diagnoseMissing()}
   public Optional<Diagnosis> diagnosis(Long analysisId) {
     return diagnoses.findByAnalysisId(analysisId).map(diagnosisMapper::toDomain);
   }
@@ -103,5 +119,76 @@ public class AnalysisService {
             evaluator.level(gas, value));
        })
        .toList();
+  }
+
+  /// Returns the transformers an analysis can be registered for (not decommissioned).
+  ///
+  /// @return transformers ordered by tag
+  public List<TransformerChoice> transformerChoices() {
+    return transformers.findChoices(DECOMMISSIONED);
+  }
+
+  /// Registers one analysis from the form, computes and stores its diagnosis, and notifies the user once
+  /// the transaction is committed.
+  ///
+  /// @param form     the validated form
+  /// @param username e-mail of the user who submitted it, recipient of the summary
+  /// @return the stored analysis with its diagnosis
+  /// @throws FieldConflictException when the transformer does not exist or is decommissioned, or already
+  ///                                has an analysis on that date
+  @Transactional
+  public DiagnosedAnalysis register(AnalysisForm form, String username) {
+    var result = store(form);
+    events.publishEvent(new AnalysesDiagnosedEvent(username, "Analysis form", List.of(result), List.of()));
+    return result;
+  }
+
+  /// Stores one analysis and its diagnosis, without notification. Used by the form and by the CSV import.
+  ///
+  /// @param form the validated input
+  /// @return the stored analysis with its diagnosis
+  /// @throws FieldConflictException when the transformer does not exist or is decommissioned, or already
+  ///                                has an analysis on that date
+  @Transactional
+  public DiagnosedAnalysis store(AnalysisForm form) {
+    var transformer = transformers.findById(form.getTransformerId())
+       .filter(t -> t.getStatus() != DECOMMISSIONED)
+       .orElseThrow(() -> new FieldConflictException("transformerId", "does not exist or is decommissioned"));
+    if (analyses.existsByTransformerIdAndSampleDate(transformer.getId(), form.getSampleDate())) {
+      throw new FieldConflictException("sampleDate", "already has an analysis for this transformer");
+    }
+    var entity = new AnalysisEntity();
+    formMapper.update(form, entity);
+    entity.setTransformer(transformer);
+    return diagnoseAndStore(analyses.save(entity));
+  }
+
+  /// Diagnoses the analyses that have no diagnosis, oldest first per transformer.
+  /// Only data inserted outside the application (e.g. SQL scripts) can be in this state.
+  ///
+  /// @return number of analyses diagnosed
+  @Transactional
+  public int diagnoseMissing() {
+    var undiagnosed = analyses.findUndiagnosed();
+    undiagnosed.forEach(this::diagnoseAndStore);
+    return undiagnosed.size();
+  }
+
+  /// Computes the diagnosis of a stored analysis against its previous one and stores it.
+  private DiagnosedAnalysis diagnoseAndStore(AnalysisEntity entity) {
+    var current = analysisMapper.toDomain(entity);
+    var previous = analyses.findFirstByTransformerIdAndSampleDateBeforeOrderBySampleDateDesc(
+          current.transformerId(), current.sampleDate())
+       .map(analysisMapper::toDomain)
+       .orElse(null);
+    var diagnosis = engine.diagnose(current, previous);
+
+    var diagnosisEntity = new DiagnosisEntity();
+    formMapper.update(diagnosis, diagnosisEntity);
+    diagnosisEntity.setAnalysis(entity);
+    diagnoses.save(diagnosisEntity);
+
+    return new DiagnosedAnalysis(entity.getId(), current.transformerId(), entity.getTransformer().getTag(),
+       current.sampleDate(), diagnosis);
   }
 }

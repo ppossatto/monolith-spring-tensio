@@ -5,7 +5,7 @@ import org.springframework.data.repository.Repository;
 
 import java.util.Optional;
 
-/// Read access to the diagnoses.
+/// Access to the diagnoses. Diagnoses are only created by `AnalysisService`, together with their analysis.
 public interface DiagnosisRepository extends Repository<DiagnosisEntity, Long> {
 
   /// Returns the diagnosis of an analysis.
@@ -13,4 +13,10 @@ public interface DiagnosisRepository extends Repository<DiagnosisEntity, Long> {
   /// @param analysisId the analysis id
   /// @return the diagnosis, empty when the analysis is not diagnosed yet
   Optional<DiagnosisEntity> findByAnalysisId(Long analysisId);
+
+  /// Stores a diagnosis.
+  ///
+  /// @param diagnosis the diagnosis
+  /// @return the stored diagnosis
+  DiagnosisEntity save(DiagnosisEntity diagnosis);
 }

@@ -41,7 +41,7 @@
                     <#assign hs = diagnosis.healthStatus().name()>
                     <span class="badge text-bg-${badge[hs]}">${hs}</span>
                 <#else>
-                    <span class="badge bg-body-tertiary text-body border">Pending</span>
+                    <span class="text-muted">—</span>
                 </#if>
             </div>
             <div class="card-body row g-3">
@@ -52,7 +52,8 @@
                     <@field id="rogers" label="Rogers ratios (weight 2)" value=diagnosis.rogersFault()???then(diagnosis.rogersFault().label, "Not applicable") col="col-md-6"/>
                     <@field id="doernenburg" label="Doernenburg ratios (weight 1)" value=diagnosis.doernenburgFault()???then(diagnosis.doernenburgFault().label, "Not applicable") col="col-md-6"/>
                 <#else>
-                    <p class="text-muted mb-0">This analysis has not been diagnosed yet.</p>
+                    <#-- Only analyses inserted outside the application, until the startup backfill runs -->
+                    <p class="text-muted mb-0">Diagnosis not available.</p>
                 </#if>
             </div>
         </section>

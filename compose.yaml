@@ -8,8 +8,16 @@ services:
     ports:
       - '5432'
 
+  # SMTP server for development: catches every e-mail sent by the application.
+  # Web UI: http://localhost:8025
+  mailpit:
+    image: 'axllent/mailpit:v1.31.6'
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+
   # Application image (Dockerfile). Only started with the "app" compose profile, so the Spring Boot
-  # Docker Compose support of the dev run keeps starting the database alone:
+  # Docker Compose support of the dev run keeps starting only the database and Mailpit:
   #   docker compose --profile app up --build
   app:
     profiles: [ 'app' ]
@@ -17,10 +25,12 @@ services:
     image: 'tensio:latest'
     depends_on:
       - postgres
+      - mailpit
     environment:
       - 'SPRING_PROFILES_ACTIVE=dev'
       - 'SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/mydatabase'
       - 'SPRING_DATASOURCE_USERNAME=myuser'
       - 'SPRING_DATASOURCE_PASSWORD=secret'
+      - 'SPRING_MAIL_HOST=mailpit'
     ports:
       - '8080:8080'
