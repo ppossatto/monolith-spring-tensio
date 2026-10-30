@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import static com.ppossatto.tensio.domain.transformer.TransformerStatus.DECOMMISSIONED;
@@ -35,13 +36,15 @@ public class TransformerService {
   /// Returns a page of non-decommissioned transformers, ordered by criticality.
   ///
   /// @param health only transformers in this health status, or all when `null`
+  /// @param tag    case-insensitive part of the tag to search for; blank matches every tag
   /// @param page   zero-based page number (negative values are treated as 0)
   /// @return the requested page
-  public Page<TransformerRow> list(HealthStatus health, int page) {
+  public Page<TransformerRow> list(HealthStatus health, String tag, int page) {
     var pageable = PageRequest.of(Math.max(page, 0), PAGE_SIZE);
+    var pattern = containsPattern(tag);
     return health == null
-       ? transformers.findDashboardRows(DECOMMISSIONED, pageable)
-       : transformers.findDashboardRowsWithHealth(DECOMMISSIONED, health, pageable);
+       ? transformers.findDashboardRows(DECOMMISSIONED, pattern, pageable)
+       : transformers.findDashboardRowsWithHealth(DECOMMISSIONED, health, pattern, pageable);
   }
 
   /// Returns a transformer with its substation.
@@ -61,5 +64,17 @@ public class TransformerService {
   /// @return the latest diagnosis, empty when the transformer has no diagnosed analysis
   public Optional<LatestDiagnosis> latestDiagnosis(Long transformerId) {
     return latestDiagnoses.findById(transformerId).map(diagnosisMapper::toDomain);
+  }
+
+  /// Builds a lower-case LIKE pattern that matches values containing `text`, escaping `!`, `%` and `_` with `!`.
+  private static String containsPattern(String text) {
+    if (text == null || text.isBlank()) {
+      return "%";
+    }
+    var escaped = text.strip().toLowerCase(Locale.ROOT)
+       .replace("!", "!!")
+       .replace("%", "!%")
+       .replace("_", "!_");
+    return "%" + escaped + "%";
   }
 }

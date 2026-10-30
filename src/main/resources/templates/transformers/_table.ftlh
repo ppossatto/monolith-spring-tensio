@@ -1,7 +1,8 @@
 <#import "/spring.ftl" as spring>
 <#assign badge = {"OK": "success", "ALERT": "warning", "DANGER": "danger"}>
-<#assign healthQuery = "">
-<#if health??><#assign healthQuery = "&health=" + health.name()></#if>
+<#assign filterQuery = "">
+<#if health??><#assign filterQuery = filterQuery + "&health=" + health.name()></#if>
+<#if q?has_content><#assign filterQuery = filterQuery + "&q=" + q?url("UTF-8")></#if>
 
 <div id="transformers">
     <div class="table-responsive">
@@ -40,11 +41,11 @@
     <#if transformers.totalPages gt 1>
         <nav class="d-flex justify-content-between align-items-center p-2">
             <button class="btn btn-sm btn-outline-secondary" <#if !transformers.hasPrevious()>disabled</#if>
-                    hx-get="<@spring.url '/transformers?page=${(transformers.number - 1)?c}${healthQuery}'/>"
+                    hx-get="<@spring.url '/transformers?page=${(transformers.number - 1)?c}${filterQuery}'/>"
                     hx-target="#transformers" hx-swap="outerHTML">Previous</button>
             <span class="small">${transformers.number + 1} / ${transformers.totalPages}</span>
             <button class="btn btn-sm btn-outline-secondary" <#if !transformers.hasNext()>disabled</#if>
-                    hx-get="<@spring.url '/transformers?page=${(transformers.number + 1)?c}${healthQuery}'/>"
+                    hx-get="<@spring.url '/transformers?page=${(transformers.number + 1)?c}${filterQuery}'/>"
                     hx-target="#transformers" hx-swap="outerHTML">Next</button>
         </nav>
     </#if>

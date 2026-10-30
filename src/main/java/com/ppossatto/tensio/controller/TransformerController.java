@@ -19,17 +19,19 @@ class TransformerController {
 
   @GetMapping
   String index(@RequestParam(required = false) HealthStatus health,
+               @RequestParam(defaultValue = "") String q,
                @RequestParam(defaultValue = "0") int page,
                Model model) {
-    fillList(health, page, model);
+    fillList(health, q, page, model);
     return "transformers/index";
   }
 
   @GetMapping(headers = {"HX-Request", "!HX-History-Restore-Request"})
   String table(@RequestParam(required = false) HealthStatus health,
+               @RequestParam(defaultValue = "") String q,
                @RequestParam(defaultValue = "0") int page,
                Model model) {
-    fillList(health, page, model);
+    fillList(health, q, page, model);
     return "transformers/_table";
   }
 
@@ -40,8 +42,10 @@ class TransformerController {
     return "transformers/detail";
   }
 
-  private void fillList(HealthStatus health, int page, Model model) {
+  private void fillList(HealthStatus health, String q, int page, Model model) {
+    var search = q.strip();
     model.addAttribute("health", health);
-    model.addAttribute("transformers", transformers.list(health, page));
+    model.addAttribute("q", search);
+    model.addAttribute("transformers", transformers.list(health, search, page));
   }
 }

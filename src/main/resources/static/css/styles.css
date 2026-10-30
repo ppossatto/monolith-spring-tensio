@@ -67,6 +67,9 @@
     background-color: var(--bs-secondary-color);
 }
 
+/* Transformers list */
+.transformer-search { width: 100%; max-width: 280px; }
+
 /* Fonts (self-hosted, SIL Open Font License: /fonts/montserrat/OFL.txt) */
 @font-face {
     font-family: "Montserrat";

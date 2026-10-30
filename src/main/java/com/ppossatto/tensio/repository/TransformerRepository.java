@@ -28,20 +28,24 @@ public interface TransformerRepository extends JpaRepository<TransformerEntity, 
             where t.status <> :excluded
             """;
 
-  /// Ordered by criticality, then worst health, then tag.
-  @Query(value = DASHBOARD_ROWS_SELECT + "order by t.criticality desc, coalesce(l.healthRank, -1) desc, t.tag",
-     countQuery = "select count(t) from TransformerEntity t where t.status <> :excluded")
-  Page<TransformerRow> findDashboardRows(TransformerStatus excluded, Pageable pageable);
+  /// Tag filter shared by the paginated queries: `:tagPattern` is a lower-case LIKE pattern using `!` as escape.
+  String TAG_FILTER = "and lower(t.tag) like :tagPattern escape '!' ";
 
-  /// Transformers in the given health status, ordered by criticality, then tag.
-  @Query(value = DASHBOARD_ROWS_SELECT + "and l.healthStatus = :health order by t.criticality desc, t.tag",
+  /// Transformers whose tag matches `tagPattern`, ordered by criticality, then worst health, then tag.
+  @Query(value = DASHBOARD_ROWS_SELECT + TAG_FILTER
+     + "order by t.criticality desc, coalesce(l.healthRank, -1) desc, t.tag",
+     countQuery = "select count(t) from TransformerEntity t where t.status <> :excluded " + TAG_FILTER)
+  Page<TransformerRow> findDashboardRows(TransformerStatus excluded, String tagPattern, Pageable pageable);
+
+  /// Transformers in the given health status whose tag matches `tagPattern`, ordered by criticality, then tag.
+  @Query(value = DASHBOARD_ROWS_SELECT + TAG_FILTER + "and l.healthStatus = :health order by t.criticality desc, t.tag",
      countQuery = """
             select count(t) from TransformerEntity t
             join TransformerLatestDiagnosis l on l.transformerId = t.id
             where t.status <> :excluded and l.healthStatus = :health
-            """)
+            """ + TAG_FILTER)
   Page<TransformerRow> findDashboardRowsWithHealth(TransformerStatus excluded, HealthStatus health,
-                                                       Pageable pageable);
+                                                   String tagPattern, Pageable pageable);
 
   /// Ordered by worst health (DANGER, ALERT, OK, no diagnosis), then criticality, then tag.
   /// Returns a list so no count query is executed.
