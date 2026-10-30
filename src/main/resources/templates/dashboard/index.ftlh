@@ -117,25 +117,29 @@
                 <#if substations?has_content>
                     <ul class="list-group list-group-flush">
                         <#list substations as s>
-                            <li class="list-group-item">
+                            <li class="list-group-item position-relative">
                                 <div class="d-flex justify-content-between align-items-center gap-2">
                                     <div>
-                                        <span class="fw-semibold">${s.acronym()}</span>
+                                        <a href="<@spring.url '/substations/${s.id()?c}'/>"
+                                           class="stretched-link text-reset text-decoration-none fw-semibold">${s.acronym()}</a>
                                         <#if s.name()??><span class="text-muted">· ${s.name()}</span></#if>
                                         <#if s.city()??>
                                             <div class="small text-muted">${s.city()}<#if s.state()??> / ${s.state()}</#if></div>
                                         </#if>
                                     </div>
-                                    <span class="badge text-bg-light border text-nowrap">
-                                        ${s.transformerCount()} transformer<#if s.transformerCount() != 1>s</#if>
-                                    </span>
-                                </div>
-                                <#if s.dangerCount() gt 0>
-                                    <div class="alert alert-danger d-flex align-items-center gap-2 py-2 px-3 mt-2 mb-0 small" role="status">
-                                        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                                        Needs attention: ${s.dangerCount()} transformer<#if s.dangerCount() != 1>s</#if> in DANGER
+                                    <div class="d-flex flex-wrap justify-content-end gap-1">
+                                        <#if s.dangerCount() gt 0>
+                                            <span class="badge rounded-pill bg-danger-subtle text-danger-emphasis border border-danger-subtle text-nowrap"
+                                                  title="Needs attention">
+                                                <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+                                                ${s.dangerCount()} in danger
+                                            </span>
+                                        </#if>
+                                        <span class="badge rounded-pill text-bg-light border text-nowrap">
+                                            ${s.transformerCount()} transformer<#if s.transformerCount() != 1>s</#if>
+                                        </span>
                                     </div>
-                                </#if>
+                                </div>
                             </li>
                         </#list>
                     </ul>
