@@ -38,7 +38,9 @@
         <@navItem href="/transformers" icon="bi-lightning-charge" label="Transformers" key="transformers" current=active/>
         <@navItem href="/substations" icon="bi-building" label="Substations" key="substations" current=active/>
         <@navItem href="/analyses" icon="bi-clipboard-data" label="Analyses" key="analyses" current=active/>
-        <@navItem href="/users" icon="bi-person" label="Users" key="users" current=active/>
+        <#if isAdmin!false>
+          <@navItem href="/users" icon="bi-person" label="Users" key="users" current=active/>
+        </#if>
       </ul>
     </aside>
   </#if>

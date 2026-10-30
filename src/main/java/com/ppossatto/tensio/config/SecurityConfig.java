@@ -14,9 +14,11 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 @Configuration
 public class SecurityConfig {
 
-  /// Security rules: login page, static resources, health check and error page are public; everything else
-  /// requires authentication. Anonymous HTMX requests get `401` with an `HX-Redirect` header to the login page,
-  /// any other anonymous request is redirected to it.
+  /// Security rules: login page, static resources, health check and error page are public; user pages
+  /// require `ADMIN`; everything else requires authentication. Users are loaded by
+  /// {@link com.ppossatto.tensio.service.AccountUserDetailsService}.
+  /// Anonymous HTMX requests get `401` with an `HX-Redirect` header to the login page, any other anonymous
+  /// request is redirected to it.
   ///
   /// @param http the security builder
   /// @return the filter chain
@@ -26,6 +28,7 @@ public class SecurityConfig {
     http
        .authorizeHttpRequests(auth -> auth
           .requestMatchers("/login", "/webjars/**", "/css/**", "/js/**", "/fonts/**", "/actuator/health", "/error").permitAll()
+          .requestMatchers("/users/**").hasRole("ADMIN")
           .anyRequest().authenticated()
        ).formLogin(form -> form
           .loginPage("/login")

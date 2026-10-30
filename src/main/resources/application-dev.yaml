@@ -1,12 +1,6 @@
 spring:
   application:
     name: ml-sb-tensio
-  security:
-    user:
-      name: admin@tensio.local
-      password: "{noop}admin"
-      roles: ADMIN
-
   datasource:
     username: myuser
     password: ENC(dMvpCJ4t8Nb0/bhzVbgVnw==)

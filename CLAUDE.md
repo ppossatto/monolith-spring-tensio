@@ -9,7 +9,7 @@ Tensio is a monolithic Spring MVC application with server-side rendering.
 - Java 25, Spring Boot 4 (Spring Framework 7), Maven (use `./mvnw`)
 - Freemarker views (`.ftlh`), HTMX for partial updates, Bootstrap and Chart.js via WebJars
 - PostgreSQL with Flyway migrations, Spring Data JPA, MapStruct
-- Spring Security with form login
+- Spring Security with form login; users in the `app_user` table (BCrypt), `ADMIN` / `USER` roles
 
 ## Language
 
@@ -63,6 +63,6 @@ Rules:
 ## Profiles and configuration
 
 - `application.yaml`: settings for every environment (server, DGA limits).
-- `dev`: local database, in-memory admin user, dummy data.
-- `test`: used by the test suite (Testcontainers); no dummy data.
+- `dev`: local database and dummy data, including users (`admin@tensio.local` / `admin`).
+- `test`: used by the test suite (Testcontainers); no dummy data, only the test user from `src/test/resources/db/test`.
 - `tls`: HTTPS served by the application; combine with another profile (`dev,tls`). Certificates come from the `TLS_CERTIFICATE` / `TLS_PRIVATE_KEY` environment variables and are never committed.

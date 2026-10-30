@@ -1,6 +1,6 @@
 spring:
-  security:
-    user:
-      name: test@tensio.local
-      password: "{noop}secret"
-      roles: ADMIN
+  flyway:
+    # db/test adds the test user (test@tensio.local / secret, ADMIN) used by the integration tests.
+    locations:
+      - classpath:db/migration
+      - classpath:db/test
