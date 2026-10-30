@@ -30,6 +30,7 @@ Tensio is a monolithic Spring MVC application with server-side rendering.
 3. Once the maintainer confirms the feature works, write the tests in a follow-up change:
    - back end: unit tests and integration tests (Testcontainers);
    - front end: Playwright tests.
+   - MockMvc integration tests use `@WebIntegrationTest`; Playwright tests extend `PlaywrightSupport` and are named `*BrowserIT`.
 4. Keep changes small and focused; one concern per pull request.
 
 ## Architecture (MVC layers)
@@ -64,5 +65,5 @@ Rules:
 
 - `application.yaml`: settings for every environment (server, DGA limits).
 - `dev`: local database and dummy data, including users (`admin@tensio.local` / `admin`).
-- `test`: used by the test suite (Testcontainers); no dummy data, only the test user from `src/test/resources/db/test`.
+- `test`: used by the test suite (Testcontainers); no dummy data, only the small fixture in `src/test/resources/db/test` (test users, TT-01..TT-12, TSA/TSB/TSC). Its expected numbers are described at the top of `V1001__test_data.sql` and in `TestData`; keep them in sync when the fixture changes.
 - `tls`: HTTPS served by the application; combine with another profile (`dev,tls`). Certificates come from the `TLS_CERTIFICATE` / `TLS_PRIVATE_KEY` environment variables and are never committed.
