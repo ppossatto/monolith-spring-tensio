@@ -12,14 +12,6 @@
     </div>
 </#macro>
 
-<#function faultLabel fault>
-    <#return fault???then(fault.label, "Not applicable")>
-</#function>
-
-<#function ppm value>
-    <#return value???then(value?string["0.##"], "—")>
-</#function>
-
 <@layout.page title="Analysis ${t.tag()} · ${a.sampleDate()}" active="analyses">
     <a href="<@spring.url '/analyses'/>" class="d-inline-flex align-items-center gap-1 mb-3 small">
         <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to analyses
@@ -54,11 +46,11 @@
             </div>
             <div class="card-body row g-3">
                 <#if diagnosis??>
-                    <@field id="final-fault" label="Final fault (weighted vote)" value=faultLabel(diagnosis.finalFault()) col="col-12"/>
-                    <@field id="duval" label="Duval triangle (weight 4)" value=faultLabel(diagnosis.duvalFault()) col="col-md-6"/>
-                    <@field id="iec" label="IEC ratios (weight 3)" value=faultLabel(diagnosis.iecFault()) col="col-md-6"/>
-                    <@field id="rogers" label="Rogers ratios (weight 2)" value=faultLabel(diagnosis.rogersFault()) col="col-md-6"/>
-                    <@field id="doernenburg" label="Doernenburg ratios (weight 1)" value=faultLabel(diagnosis.doernenburgFault()) col="col-md-6"/>
+                    <@field id="final-fault" label="Final fault (weighted vote)" value=diagnosis.finalFault()???then(diagnosis.finalFault().label, "Not applicable") col="col-12"/>
+                    <@field id="duval" label="Duval triangle (weight 4)" value=diagnosis.duvalFault()???then(diagnosis.duvalFault().label, "Not applicable") col="col-md-6"/>
+                    <@field id="iec" label="IEC ratios (weight 3)" value=diagnosis.iecFault()???then(diagnosis.iecFault().label, "Not applicable") col="col-md-6"/>
+                    <@field id="rogers" label="Rogers ratios (weight 2)" value=diagnosis.rogersFault()???then(diagnosis.rogersFault().label, "Not applicable") col="col-md-6"/>
+                    <@field id="doernenburg" label="Doernenburg ratios (weight 1)" value=diagnosis.doernenburgFault()???then(diagnosis.doernenburgFault().label, "Not applicable") col="col-md-6"/>
                 <#else>
                     <p class="text-muted mb-0">This analysis has not been diagnosed yet.</p>
                 </#if>
@@ -80,9 +72,9 @@
                 <#list readings as r>
                     <tr>
                         <td>${r.gas().label}<#if !r.gas().combustible> <span class="small text-muted">(non-combustible)</span></#if></td>
-                        <td class="text-end">${ppm(r.value())}</td>
-                        <td class="text-end">${ppm(r.alert())}</td>
-                        <td class="text-end">${ppm(r.danger())}</td>
+                        <td class="text-end">${r.value()???then(r.value()?string["0.##"], "—")}</td>
+                        <td class="text-end">${r.alert()???then(r.alert()?string["0.##"], "—")}</td>
+                        <td class="text-end">${r.danger()???then(r.danger()?string["0.##"], "—")}</td>
                         <td>
                             <#if r.value()?? && r.alert()??>
                                 <#assign lv = r.level().name()>
