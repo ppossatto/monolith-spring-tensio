@@ -1,5 +1,7 @@
 package com.ppossatto.tensio.service;
 
+import com.ppossatto.tensio.domain.analysis.GasChart;
+import com.ppossatto.tensio.domain.analysis.GasProfile;
 import com.ppossatto.tensio.domain.diagnosis.LatestDiagnosis;
 import com.ppossatto.tensio.domain.report.ReportFile;
 import com.ppossatto.tensio.domain.transformer.Transformer;
@@ -18,13 +20,17 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /// Generates the transformer data sheet as PDF from the `reports/transformer.jrxml` JasperReports template.
 ///
-/// The template receives only `java.lang.String` parameters, already formatted for display
-/// (`null` when the value is unknown). Their names are the `PARAM_*` constants of this class.
+/// The template receives `java.lang.String` parameters, already formatted for display (`null` when the
+/// value is unknown), plus two `java.util.Collection` parameters with the gas chart rows. Their names are
+/// the `PARAM_*` constants of this class. Each chart row is a map with the keys `CHART_*`:
+/// gas label (String), series name (String) and value as % of the gas reference (Double).
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -51,8 +57,17 @@ public class TransformerReportService {
   public static final String PARAM_FINAL_FAULT = "FINAL_FAULT";
   public static final String PARAM_LAST_SAMPLE_DATE = "LAST_SAMPLE_DATE";
   public static final String PARAM_GENERATED_AT = "GENERATED_AT";
+  public static final String PARAM_COMBUSTIBLE_GASES = "COMBUSTIBLE_GASES";
+  public static final String PARAM_NON_COMBUSTIBLE_GASES = "NON_COMBUSTIBLE_GASES";
+
+  public static final String CHART_GAS = "gas";
+  public static final String CHART_SERIES = "series";
+  public static final String CHART_VALUE = "value";
+  public static final String SERIES_LATEST = "Latest analysis";
+  public static final String SERIES_AVERAGE = "12-month average";
 
   private final TransformerService transformers;
+  private final GasProfileService gasProfiles;
 
   /// Compiled template, created on first use and reused afterwards.
   private volatile JasperReport report;
@@ -65,8 +80,10 @@ public class TransformerReportService {
   public ReportFile transformerPdf(Long id) {
     var transformer = transformers.find(id);
     var diagnosis = transformers.latestDiagnosis(id).orElse(null);
+    var gasProfile = gasProfiles.profile(id);
     try {
-      var print = JasperFillManager.fillReport(report(), parameters(transformer, diagnosis), new JREmptyDataSource(1));
+      var print = JasperFillManager.fillReport(report(), parameters(transformer, diagnosis, gasProfile),
+         new JREmptyDataSource(1));
       var pdf = JasperExportManager.exportReportToPdf(print);
       return new ReportFile("transformer-" + transformer.tag() + ".pdf", pdf);
     } catch (JRException e) {
@@ -97,7 +114,7 @@ public class TransformerReportService {
     }
   }
 
-  private static Map<String, Object> parameters(Transformer t, LatestDiagnosis diagnosis) {
+  private static Map<String, Object> parameters(Transformer t, LatestDiagnosis diagnosis, GasProfile gasProfile) {
     var substation = t.substation();
     Map<String, Object> params = new HashMap<>();
     params.put(PARAM_TAG, t.tag());
@@ -120,7 +137,27 @@ public class TransformerReportService {
       params.put(PARAM_LAST_SAMPLE_DATE, text(diagnosis.sampleDate()));
     }
     params.put(PARAM_GENERATED_AT, LocalDateTime.now().format(GENERATED_AT_FORMAT));
+    params.put(PARAM_COMBUSTIBLE_GASES, chartRows(gasProfile.combustible()));
+    params.put(PARAM_NON_COMBUSTIBLE_GASES, chartRows(gasProfile.nonCombustible()));
     return params;
+  }
+
+  /// One row per gas and series; values without data are left out so the chart skips them.
+  private static List<Map<String, ?>> chartRows(GasChart chart) {
+    List<Map<String, ?>> rows = new ArrayList<>();
+    addSeries(rows, chart.labels(), SERIES_LATEST, chart.latest());
+    addSeries(rows, chart.labels(), SERIES_AVERAGE, chart.average());
+    return rows;
+  }
+
+  private static void addSeries(List<Map<String, ?>> rows, List<String> labels, String series,
+                                List<BigDecimal> values) {
+    for (int i = 0; i < labels.size(); i++) {
+      var value = values.get(i);
+      if (value != null) {
+        rows.add(Map.of(CHART_GAS, labels.get(i), CHART_SERIES, series, CHART_VALUE, value.doubleValue()));
+      }
+    }
   }
 
   private static String text(Object value) {

@@ -1,6 +1,7 @@
 package com.ppossatto.tensio.controller;
 
 import com.ppossatto.tensio.domain.diagnosis.HealthStatus;
+import com.ppossatto.tensio.service.GasProfileService;
 import com.ppossatto.tensio.service.TransformerReportService;
 import com.ppossatto.tensio.service.TransformerService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ class TransformerController {
 
   private final TransformerService transformers;
   private final TransformerReportService reports;
+  private final GasProfileService gasProfiles;
 
   @GetMapping
   String index(@RequestParam(required = false) HealthStatus health,
@@ -45,6 +47,7 @@ class TransformerController {
   String detail(@PathVariable Long id, Model model) {
     model.addAttribute("transformer", transformers.find(id));
     transformers.latestDiagnosis(id).ifPresent(d -> model.addAttribute("diagnosis", d));
+    model.addAttribute("gasProfile", gasProfiles.profile(id));
     return "transformers/detail";
   }
 

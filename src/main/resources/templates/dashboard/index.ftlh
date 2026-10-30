@@ -107,7 +107,7 @@
         </div>
     </section>
 
-    <div class="row g-4 mb-4">
+    <div class="row g-4">
         <div class="col-lg-6">
             <section class="card h-100" aria-labelledby="substations-title">
                 <div class="card-header d-flex align-items-center gap-2">
@@ -187,26 +187,4 @@
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-lg-6">
-            <section class="card" aria-labelledby="gas-profile-title">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h2 id="gas-profile-title" class="h6 mb-0">Gas profile</h2>
-                    <#if radarOptions?has_content>
-                        <select name="transformerId" aria-label="Transformer" class="form-select form-select-sm w-auto"
-                                hx-get="<@spring.url '/dashboard/radar'/>" hx-target="#radar" hx-swap="outerHTML">
-                            <#list radarOptions as o>
-                                <option value="${o.id()?c}">${o.tag()}</option>
-                            </#list>
-                        </select>
-                    </#if>
-                </div>
-                <#if radar??>
-                    <#include "_radar.ftlh">
-                <#else>
-                    <p class="card-body text-muted mb-0">No analyses registered yet.</p>
-                </#if>
-            </section>
-        </div>
-    </div>
 </@layout.page>

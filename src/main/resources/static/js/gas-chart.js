@@ -1,5 +1,7 @@
+// Renders every <canvas data-gas-chart> as a radar chart (latest analysis vs 12-month average).
+// Values are percentages of each gas reference; "null" means not measured / no reference.
 htmx.onLoad(root => {
-    root.querySelectorAll('canvas[data-radar]').forEach(canvas => {
+    root.querySelectorAll('canvas[data-gas-chart]').forEach(canvas => {
         Chart.getChart(canvas)?.destroy();
         const parse = s => JSON.parse('[' + s + ']');
 
@@ -23,6 +25,7 @@ htmx.onLoad(root => {
                 ]
             },
             options: {
+                spanGaps: true,
                 scales: { r: { beginAtZero: true, ticks: { callback: v => v + '%' } } }
             }
         });

@@ -12,6 +12,17 @@
     </div>
 </#macro>
 
+<#macro gasChart id title chart>
+    <div class="col-md-6">
+        <h3 id="${id}-title" class="h6 text-muted text-uppercase small mb-2">${title}</h3>
+        <canvas data-gas-chart aria-labelledby="${id}-title" role="img"
+                data-labels="<#list chart.labels() as l>${l}<#sep>,</#list>"
+                data-latest="<#list chart.latest() as v><#if v??>${v?c}<#else>null</#if><#sep>,</#list>"
+                data-average="<#list chart.average() as v><#if v??>${v?c}<#else>null</#if><#sep>,</#list>">
+        </canvas>
+    </div>
+</#macro>
+
 <#assign finalFault = (diagnosis?? && diagnosis.finalFault()??)?then(diagnosis.finalFault().label, "")>
 <#assign lastSample = diagnosis???then(diagnosis.sampleDate(), "")>
 <#assign year = t.manufactureYear()???then(t.manufactureYear()?c, "")>
@@ -45,6 +56,28 @@
             <div class="card-body row g-3">
                 <@field id="final-fault" label="Final fault" value=finalFault col="col-md-8"/>
                 <@field id="last-sample" label="Last sample" value=lastSample/>
+            </div>
+        </section>
+
+        <section class="card" aria-labelledby="gas-profile-title">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 id="gas-profile-title" class="h6 mb-0">Gas profile</h2>
+                <#if gasProfile.hasData()>
+                    <span class="small text-muted">Latest sample: ${gasProfile.latestSampleDate()}</span>
+                </#if>
+            </div>
+            <div class="card-body">
+                <#if gasProfile.hasData()>
+                    <div class="row g-4">
+                        <@gasChart id="combustible-gases" title="Combustible gases" chart=gasProfile.combustible()/>
+                        <@gasChart id="non-combustible-gases" title="Non-combustible gases" chart=gasProfile.nonCombustible()/>
+                    </div>
+                    <p class="small text-muted mt-3 mb-0">
+                        Values as % of each gas reference · latest analysis vs 12-month average.
+                    </p>
+                <#else>
+                    <p class="text-muted mb-0">No analyses registered yet.</p>
+                </#if>
             </div>
         </section>
 

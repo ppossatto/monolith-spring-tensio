@@ -17,7 +17,8 @@ public interface AnalysisRepository extends JpaRepository<AnalysisEntity, Long> 
 
   @Query("""
             select new com.ppossatto.tensio.repository.projection.GasAverages(
-                avg(a.h2), avg(a.ch4), avg(a.c2h2), avg(a.c2h4), avg(a.c2h6), avg(a.co), avg(a.co2))
+                avg(a.h2), avg(a.ch4), avg(a.c2h2), avg(a.c2h4), avg(a.c2h6), avg(a.co), avg(a.co2),
+                avg(a.o2), avg(a.n2))
             from AnalysisEntity a
             where a.transformer.id = :transformerId and a.sampleDate >= :since
             """)

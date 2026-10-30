@@ -1,10 +1,20 @@
 <!-- Transformer data sheet. Starter layout: open and redesign it in Jaspersoft Studio 7.x. -->
-<!-- Every parameter is a pre-formatted java.lang.String, null when unknown (see TransformerReportService). -->
+<!-- Parameters: pre-formatted java.lang.String values (null when unknown) and two collections with the gas chart rows (see TransformerReportService). -->
 <jasperReport name="transformer" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="40" bottomMargin="40" uuid="e1af5276-755d-4e2a-815f-99f91d2092c5">
 	<style name="Base" default="true" fontName="DejaVu Sans" fontSize="10.0"/>
 	<style name="Label" style="Base" forecolor="#737373" fontSize="8.0"/>
 	<style name="Value" style="Base" fontSize="10.0"/>
 	<style name="Section" style="Base" fontSize="11.0" bold="true"/>
+	<dataset name="CombustibleGases" uuid="1a682c83-0cc6-431e-b797-dfea014a5634">
+		<field name="gas" class="java.lang.String"/>
+		<field name="series" class="java.lang.String"/>
+		<field name="value" class="java.lang.Double"/>
+	</dataset>
+	<dataset name="NonCombustibleGases" uuid="5eeebe89-e6f4-4461-a2d0-23c0c46dbc5e">
+		<field name="gas" class="java.lang.String"/>
+		<field name="series" class="java.lang.String"/>
+		<field name="value" class="java.lang.Double"/>
+	</dataset>
 	<parameter name="TAG" class="java.lang.String"/>
 	<parameter name="SERIAL_NUMBER" class="java.lang.String"/>
 	<parameter name="STATUS" class="java.lang.String"/>
@@ -23,6 +33,9 @@
 	<parameter name="FINAL_FAULT" class="java.lang.String"/>
 	<parameter name="LAST_SAMPLE_DATE" class="java.lang.String"/>
 	<parameter name="GENERATED_AT" class="java.lang.String"/>
+	<!-- Rows {gas, series, value}; see TransformerReportService.chartRows -->
+	<parameter name="COMBUSTIBLE_GASES" class="java.util.Collection"/>
+	<parameter name="NON_COMBUSTIBLE_GASES" class="java.util.Collection"/>
 	<title height="524">
 		<element kind="staticText" uuid="9874b634-31ac-4d40-bc57-87a3ef265994" x="0" y="0" width="365" height="20" fontSize="16.0" bold="true" style="Base">
 			<text><![CDATA[Transformer data sheet]]></text>
@@ -152,4 +165,59 @@
 			<expression><![CDATA[$P{SUBSTATION_LOCATION}]]></expression>
 		</element>
 	</title>
+	<summary height="232">
+		<element kind="line" uuid="ac50058e-1e7a-4d8e-858d-d6c721f345cf" x="0" y="0" width="515" height="1" forecolor="#E6E6E6"/>
+		<element kind="staticText" uuid="08d3f2bd-8ae9-42da-b7d8-acf0961d676b" x="0" y="8" width="315" height="16" style="Section">
+			<text><![CDATA[Gas profile]]></text>
+		</element>
+		<element kind="staticText" uuid="20ca6d2e-efc3-4010-8b7d-7ea0249f6fd5" x="315" y="8" width="200" height="16" hTextAlign="Right" vTextAlign="Middle" style="Label">
+			<text><![CDATA[% of each gas reference]]></text>
+		</element>
+		<element kind="staticText" uuid="92301a2a-fd35-4297-822b-3677f6328344" x="0" y="30" width="250" height="12" style="Label">
+			<text><![CDATA[Combustible gases]]></text>
+		</element>
+		<element kind="component" uuid="e196a9d4-e0a5-4836-ae70-b88f00cffd2a" x="0" y="44" width="250" height="186">
+			<component kind="spiderChart">
+				<chartSettings showLegend="true">
+					<legendFont fontSize="7.0"/>
+				</chartSettings>
+				<dataset>
+					<datasetRun uuid="ea77b462-5a32-4aba-82c9-7a9e2748fd22" subDataset="CombustibleGases">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRMapCollectionDataSource($P{COMBUSTIBLE_GASES})]]></dataSourceExpression>
+					</datasetRun>
+					<series>
+						<seriesExpression><![CDATA[$F{series}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{gas}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{value}]]></valueExpression>
+					</series>
+				</dataset>
+				<plot interiorGap="0.15">
+					<labelFont fontSize="7.0"/>
+				</plot>
+			</component>
+		</element>
+		<element kind="staticText" uuid="8bb29143-4da7-46e8-9283-6d44b35dc792" x="265" y="30" width="250" height="12" style="Label">
+			<text><![CDATA[Non-combustible gases]]></text>
+		</element>
+		<element kind="component" uuid="b72f9e53-f6eb-44af-aed7-6782a3f22e6a" x="265" y="44" width="250" height="186">
+			<component kind="spiderChart">
+				<chartSettings showLegend="true">
+					<legendFont fontSize="7.0"/>
+				</chartSettings>
+				<dataset>
+					<datasetRun uuid="aba6b729-bbcb-429f-92a3-b886c31cea9f" subDataset="NonCombustibleGases">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRMapCollectionDataSource($P{NON_COMBUSTIBLE_GASES})]]></dataSourceExpression>
+					</datasetRun>
+					<series>
+						<seriesExpression><![CDATA[$F{series}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{gas}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{value}]]></valueExpression>
+					</series>
+				</dataset>
+				<plot interiorGap="0.15">
+					<labelFont fontSize="7.0"/>
+				</plot>
+			</component>
+		</element>
+	</summary>
 </jasperReport>

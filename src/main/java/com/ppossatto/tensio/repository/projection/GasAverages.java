@@ -5,7 +5,8 @@ import com.ppossatto.tensio.domain.analysis.Gas;
 import java.math.BigDecimal;
 
 public record GasAverages(Double h2, Double ch4, Double c2h2, Double c2h4,
-                          Double c2h6, Double co, Double co2) {
+                          Double c2h6, Double co, Double co2,
+                          Double o2, Double n2) {
 
   public BigDecimal value(Gas gas) {
     Double v = switch (gas) {
@@ -16,6 +17,8 @@ public record GasAverages(Double h2, Double ch4, Double c2h2, Double c2h4,
       case C2H6 -> c2h6;
       case CO -> co;
       case CO2 -> co2;
+      case O2 -> o2;
+      case N2 -> n2;
     };
     return v == null ? null : BigDecimal.valueOf(v);
   }

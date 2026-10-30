@@ -12,7 +12,9 @@ public record Analysis(
    BigDecimal c2h4,
    BigDecimal c2h6,
    BigDecimal co,
-   BigDecimal co2
+   BigDecimal co2,
+   BigDecimal o2,
+   BigDecimal n2
 ) {
 
   public BigDecimal value(Gas gas) {
@@ -24,6 +26,8 @@ public record Analysis(
       case C2H6 -> c2h6;
       case CO -> co;
       case CO2 -> co2;
+      case O2 -> o2;
+      case N2 -> n2;
     };
   }
 }

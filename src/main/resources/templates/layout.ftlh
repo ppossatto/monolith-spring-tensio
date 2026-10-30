@@ -22,7 +22,7 @@
     <script src="<@spring.url '/webjars/bootstrap/5.3.8/dist/js/bootstrap.bundle.min.js'/>" defer></script>
     <script src="<@spring.url '/webjars/htmx.org/2.0.11/dist/htmx.min.js'/>" defer></script>
     <script src="<@spring.url '/webjars/chart.js/4.5.1/dist/chart.umd.js'/>" defer></script>
-    <script src="<@spring.url '/js/dashboard.js'/>" defer></script>
+    <script src="<@spring.url '/js/gas-chart.js'/>" defer></script>
   </head>
   <body<#if bodyClass?has_content> class="${bodyClass}"</#if> <#if _csrf??>hx-headers='{"${_csrf.headerName}": "${_csrf.token}"}'</#if>>
 

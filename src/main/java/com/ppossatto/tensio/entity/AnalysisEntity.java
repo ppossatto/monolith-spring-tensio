@@ -42,4 +42,8 @@ public class AnalysisEntity extends BaseEntity {
   private BigDecimal co;
   @Column(precision = 8, scale = 2)
   private BigDecimal co2;
+  @Column(precision = 8, scale = 2)
+  private BigDecimal o2;
+  @Column(precision = 8, scale = 2)
+  private BigDecimal n2;
 }

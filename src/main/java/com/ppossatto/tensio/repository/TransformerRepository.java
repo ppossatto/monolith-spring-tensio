@@ -2,7 +2,6 @@ package com.ppossatto.tensio.repository;
 
 import com.ppossatto.tensio.domain.diagnosis.HealthStatus;
 import com.ppossatto.tensio.repository.projection.HealthCount;
-import com.ppossatto.tensio.repository.projection.TransformerOption;
 import com.ppossatto.tensio.repository.projection.TransformerRow;
 import com.ppossatto.tensio.entity.TransformerEntity;
 import com.ppossatto.tensio.domain.transformer.TransformerStatus;
@@ -61,14 +60,6 @@ public interface TransformerRepository extends JpaRepository<TransformerEntity, 
             """)
   List<HealthCount> countByHealth(TransformerStatus excluded);
 
-  @Query("""
-            select new com.ppossatto.tensio.repository.projection.TransformerOption(t.id, t.tag)
-            from TransformerEntity t
-            where t.status <> :excluded
-              and exists (select a.id from AnalysisEntity a where a.transformer = t)
-            order by t.criticality desc, t.tag
-            """)
-  List<TransformerOption> findRadarOptions(TransformerStatus excluded);
 
   /// Transformers of a substation, ordered by criticality, then worst health, then tag.
   @Query(DASHBOARD_ROWS_SELECT + "and s.id = :substationId "
