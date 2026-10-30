@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 
 /// Configuration class for CSRF authentication and authorization.
 @Configuration
@@ -25,12 +27,19 @@ public class SecurityConfig {
           .permitAll()
        ).logout(logout -> logout
           .logoutSuccessUrl("/login?logout")
-       ).exceptionHandling(ex -> ex.defaultAuthenticationEntryPointFor(
-          (request, response, e) -> {
-            response.setHeader("HX-Redirect", request.getContextPath() + "/login");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-          },
-          request -> request.getHeader("HX-Request") != null));
+       ).exceptionHandling(ex -> ex
+          // HTMX requests: 401 + HX-Redirect so htmx performs a full-page redirect.
+          .defaultAuthenticationEntryPointFor(
+             (request, response, e) -> {
+               response.setHeader("HX-Redirect", request.getContextPath() + "/login");
+               response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+             },
+             request -> request.getHeader("HX-Request") != null)
+          // Any other request: redirect to the login page. Registered explicitly because,
+          // without a match, Spring Security falls back to the first registered entry point.
+          .defaultAuthenticationEntryPointFor(
+             new LoginUrlAuthenticationEntryPoint("/login"),
+             AnyRequestMatcher.INSTANCE));
     return http.build();
   }
 
