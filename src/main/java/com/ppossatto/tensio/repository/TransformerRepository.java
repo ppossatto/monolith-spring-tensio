@@ -14,7 +14,8 @@ import java.util.List;
 
 public interface TransformerRepository extends JpaRepository<TransformerEntity, Long> {
 
-  @Query(value = """
+  /// Non-decommissioned transformers ordered by priority: criticality, then worst health, then tag.
+  String DASHBOARD_ROWS_QUERY = """
             select new com.ppossatto.tensio.repository.projection.TransformerRow(
                 t.id, t.tag, s.acronym, t.ratedPowerMva, t.criticality,
                 l.healthStatus, l.finalFault, l.sampleDate)
@@ -23,9 +24,15 @@ public interface TransformerRepository extends JpaRepository<TransformerEntity, 
             left join TransformerLatestDiagnosis l on l.transformerId = t.id
             where t.status <> :excluded
             order by t.criticality desc, coalesce(l.healthRank, -1) desc, t.tag
-            """,
+            """;
+
+  @Query(value = DASHBOARD_ROWS_QUERY,
      countQuery = "select count(t) from TransformerEntity t where t.status <> :excluded")
   Page<TransformerRow> findDashboardRows(TransformerStatus excluded, Pageable pageable);
+
+  /// Same ordering as {@link #findDashboardRows}, without the count query.
+  @Query(DASHBOARD_ROWS_QUERY)
+  List<TransformerRow> findTopDashboardRows(TransformerStatus excluded, Pageable pageable);
 
   @Query("""
             select new com.ppossatto.tensio.repository.projection.HealthCount(l.healthStatus, count(l))

@@ -59,7 +59,7 @@ public class DashboardService {
   ///
   /// @return up to {@value #TOP_TRANSFORMERS} transformers, in dashboard priority order
   public List<TransformerRow> topTransformers() {
-    return transformers.findDashboardRows(DECOMMISSIONED, PageRequest.of(0, TOP_TRANSFORMERS)).getContent();
+    return transformers.findTopDashboardRows(DECOMMISSIONED, PageRequest.of(0, TOP_TRANSFORMERS));
   }
 
   public List<TransformerOption> radarOptions() {
