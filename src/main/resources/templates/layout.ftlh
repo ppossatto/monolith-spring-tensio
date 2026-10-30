@@ -22,7 +22,8 @@
     <script src="<@spring.url '/webjars/bootstrap/5.3.8/dist/js/bootstrap.bundle.min.js'/>" defer></script>
     <script src="<@spring.url '/webjars/htmx.org/2.0.11/dist/htmx.min.js'/>" defer></script>
     <script src="<@spring.url '/webjars/chart.js/4.5.1/dist/chart.umd.js'/>" defer></script>
-    <script src="<@spring.url '/js/dashboard.js'/>" defer></script>
+    <script src="<@spring.url '/js/gas-chart.js'/>" defer></script>
+    <script src="<@spring.url '/js/table-rows.js'/>" defer></script>
   </head>
   <body<#if bodyClass?has_content> class="${bodyClass}"</#if> <#if _csrf??>hx-headers='{"${_csrf.headerName}": "${_csrf.token}"}'</#if>>
 
@@ -37,7 +38,9 @@
         <@navItem href="/transformers" icon="bi-lightning-charge" label="Transformers" key="transformers" current=active/>
         <@navItem href="/substations" icon="bi-building" label="Substations" key="substations" current=active/>
         <@navItem href="/analyses" icon="bi-clipboard-data" label="Analyses" key="analyses" current=active/>
-        <@navItem href="/users" icon="bi-person" label="Users" key="users" current=active/>
+        <#if isAdmin!false>
+          <@navItem href="/users" icon="bi-person" label="Users" key="users" current=active/>
+        </#if>
       </ul>
     </aside>
   </#if>

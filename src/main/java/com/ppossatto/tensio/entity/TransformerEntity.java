@@ -18,6 +18,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/// JPA mapping of the `transformer` table. See {@link com.ppossatto.tensio.domain.transformer.Transformer}.
 @Entity
 @Table(name = "transformer")
 @Getter

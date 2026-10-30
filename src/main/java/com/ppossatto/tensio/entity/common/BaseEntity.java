@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
+/// Base of all entities: generated id and audit timestamps filled by JPA auditing.
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter

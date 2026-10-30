@@ -14,11 +14,21 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 @Configuration
 public class SecurityConfig {
 
+  /// Security rules: login page, static resources, health check and error page are public; user pages
+  /// require `ADMIN`; everything else requires authentication. Users are loaded by
+  /// {@link com.ppossatto.tensio.service.AccountUserDetailsService}.
+  /// Anonymous HTMX requests get `401` with an `HX-Redirect` header to the login page, any other anonymous
+  /// request is redirected to it.
+  ///
+  /// @param http the security builder
+  /// @return the filter chain
+  /// @throws Exception when the configuration is invalid
   @Bean
   SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
        .authorizeHttpRequests(auth -> auth
           .requestMatchers("/login", "/webjars/**", "/css/**", "/js/**", "/fonts/**", "/actuator/health", "/error").permitAll()
+          .requestMatchers("/users/**").hasRole("ADMIN")
           .anyRequest().authenticated()
        ).formLogin(form -> form
           .loginPage("/login")
@@ -43,6 +53,10 @@ public class SecurityConfig {
     return http.build();
   }
 
+  /// Delegating encoder: hashes new passwords with the Spring Security default and accepts stored ids such as
+  /// `{noop}` or `{bcrypt}`.
+  ///
+  /// @return the password encoder
   @Bean
   PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();

@@ -3,6 +3,7 @@ package com.ppossatto.tensio.domain.diagnosis;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/// Fault types identified by the DGA methods, with a severity (higher is worse) and a display label.
 @RequiredArgsConstructor
 @Getter
 public enum Fault {
@@ -19,6 +20,9 @@ public enum Fault {
   private final int severity;
   private final String label;
 
+  /// Health status implied by this fault: OK for NORMAL, DANGER for severity 5 or more, ALERT otherwise.
+  ///
+  /// @return the health status
   public HealthStatus health() {
     if (this == NORMAL) return HealthStatus.OK;
     return severity >= 5 ? HealthStatus.DANGER : HealthStatus.ALERT;

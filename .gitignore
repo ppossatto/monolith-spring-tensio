@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### TLS certificates and keys (never commit) ###
+*.pem
+*.key
+*.p12
+*.jks

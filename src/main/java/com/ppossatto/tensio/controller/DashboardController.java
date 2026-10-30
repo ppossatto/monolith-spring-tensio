@@ -5,35 +5,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+/// Dashboard (`/`): health summary, highlighted transformers, substations and latest analyses.
 @Controller
 @RequiredArgsConstructor
 class DashboardController {
 
   private final DashboardService dashboard;
 
+  /// Shows the dashboard.
+  ///
+  /// @param model the view model
+  /// @return the `dashboard/index` view
   @GetMapping("/")
-  String index(@RequestParam(defaultValue = "0") int page, Model model) {
-    var options = dashboard.radarOptions();
+  String index(Model model) {
     model.addAttribute("summary", dashboard.summary());
-    model.addAttribute("transformers", dashboard.transformers(page));
-    model.addAttribute("radarOptions", options);
-    if (!options.isEmpty()) {
-      model.addAttribute("radar", dashboard.radar(options.getFirst().id()));
-    }
+    model.addAttribute("highlights", dashboard.highlightedTransformers());
+    model.addAttribute("substations", dashboard.substations());
+    model.addAttribute("latestAnalyses", dashboard.latestAnalyses());
     return "dashboard/index";
-  }
-
-  @GetMapping(value = "/", headers = {"HX-Request", "!HX-History-Restore-Request"})
-  String transformersPage(@RequestParam(defaultValue = "0") int page, Model model) {
-    model.addAttribute("transformers", dashboard.transformers(page));
-    return "dashboard/_transformers";
-  }
-
-  @GetMapping("/dashboard/radar")
-  String radar(@RequestParam Long transformerId, Model model) {
-    model.addAttribute("radar", dashboard.radar(transformerId));
-    return "dashboard/_radar";
   }
 }

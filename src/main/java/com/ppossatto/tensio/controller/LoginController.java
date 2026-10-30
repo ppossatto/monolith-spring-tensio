@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/// Login page. Authentication itself is handled by Spring Security form login (`POST /login`).
 @Controller
 @Slf4j
 class LoginController {

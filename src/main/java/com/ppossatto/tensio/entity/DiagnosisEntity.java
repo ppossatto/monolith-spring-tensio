@@ -6,6 +6,7 @@ import com.ppossatto.tensio.domain.diagnosis.HealthStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+/// JPA mapping of the `diagnosis` table: fault found by each DGA method, final fault and health status of one analysis.
 @Entity
 @Table(name = "diagnosis")
 @Getter @Setter @NoArgsConstructor
