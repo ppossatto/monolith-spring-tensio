@@ -21,7 +21,8 @@ class HealthStatusTest {
   }
 
   @Test
-  void dangerIsTheWorst() {
-    assertThat(HealthStatus.values()).last().isEqualTo(HealthStatus.DANGER);
+  void statusesAreOrderedFromBestToWorst() {
+    // worst() relies on the declaration order
+    assertThat(HealthStatus.values()).containsExactly(HealthStatus.OK, HealthStatus.ALERT, HealthStatus.DANGER);
   }
 }
