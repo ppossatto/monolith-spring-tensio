@@ -1,0 +1,155 @@
+<!-- Transformer data sheet. Starter layout: open and redesign it in Jaspersoft Studio 7.x. -->
+<!-- Every parameter is a pre-formatted java.lang.String, null when unknown (see TransformerReportService). -->
+<jasperReport name="transformer" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="40" bottomMargin="40" uuid="e1af5276-755d-4e2a-815f-99f91d2092c5">
+	<style name="Base" default="true" fontName="DejaVu Sans" fontSize="10.0"/>
+	<style name="Label" style="Base" forecolor="#737373" fontSize="8.0"/>
+	<style name="Value" style="Base" fontSize="10.0"/>
+	<style name="Section" style="Base" fontSize="11.0" bold="true"/>
+	<parameter name="TAG" class="java.lang.String"/>
+	<parameter name="SERIAL_NUMBER" class="java.lang.String"/>
+	<parameter name="STATUS" class="java.lang.String"/>
+	<parameter name="MANUFACTURER" class="java.lang.String"/>
+	<parameter name="MANUFACTURE_YEAR" class="java.lang.String"/>
+	<parameter name="COMMISSIONING_DATE" class="java.lang.String"/>
+	<parameter name="CRITICALITY" class="java.lang.String"/>
+	<parameter name="RATED_POWER" class="java.lang.String"/>
+	<parameter name="PRIMARY_VOLTAGE" class="java.lang.String"/>
+	<parameter name="SECONDARY_VOLTAGE" class="java.lang.String"/>
+	<parameter name="OIL_TYPE" class="java.lang.String"/>
+	<parameter name="SUBSTATION_ACRONYM" class="java.lang.String"/>
+	<parameter name="SUBSTATION_NAME" class="java.lang.String"/>
+	<parameter name="SUBSTATION_LOCATION" class="java.lang.String"/>
+	<parameter name="HEALTH_STATUS" class="java.lang.String"/>
+	<parameter name="FINAL_FAULT" class="java.lang.String"/>
+	<parameter name="LAST_SAMPLE_DATE" class="java.lang.String"/>
+	<parameter name="GENERATED_AT" class="java.lang.String"/>
+	<title height="524">
+		<element kind="staticText" uuid="9874b634-31ac-4d40-bc57-87a3ef265994" x="0" y="0" width="365" height="20" fontSize="16.0" bold="true" style="Base">
+			<text><![CDATA[Transformer data sheet]]></text>
+		</element>
+		<element kind="textField" uuid="336de95b-55ce-49cd-bbd1-281c0abdc7c5" x="365" y="0" width="150" height="20" blankWhenNull="true" hTextAlign="Right" vTextAlign="Middle" style="Label">
+			<expression><![CDATA["Generated " + $P{GENERATED_AT}]]></expression>
+		</element>
+		<element kind="textField" uuid="9de12979-bc78-4cb0-b32f-b7119aa46b4e" x="0" y="22" width="515" height="24" blankWhenNull="true" fontSize="20.0" bold="true" forecolor="#23A6F0" style="Base">
+			<expression><![CDATA[$P{TAG}]]></expression>
+		</element>
+		<element kind="line" uuid="880e5039-1269-4a3c-ade3-20c7414d8bd4" x="0" y="60" width="515" height="1" forecolor="#E6E6E6"/>
+		<element kind="staticText" uuid="8f9e4c3b-87f3-4e31-a2b8-3112ac9e750e" x="0" y="68" width="515" height="16" style="Section">
+			<text><![CDATA[Current condition]]></text>
+		</element>
+		<element kind="staticText" uuid="8c7bea84-1e89-449f-9966-9a6fd7fc25ef" x="0" y="90" width="247" height="11" style="Label">
+			<text><![CDATA[Health status]]></text>
+		</element>
+		<element kind="textField" uuid="2dd9f999-e5c7-4710-8891-2912181bdd7c" x="0" y="101" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{HEALTH_STATUS}]]></expression>
+		</element>
+		<element kind="staticText" uuid="fea08345-8bed-49e7-af51-23776c98d1c6" x="257" y="90" width="247" height="11" style="Label">
+			<text><![CDATA[Last sample]]></text>
+		</element>
+		<element kind="textField" uuid="c9c51e50-3992-4c1d-a932-6e020e1ac120" x="257" y="101" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{LAST_SAMPLE_DATE}]]></expression>
+		</element>
+		<element kind="staticText" uuid="3098d500-46b8-4247-8520-da75a2bdd507" x="0" y="122" width="247" height="11" style="Label">
+			<text><![CDATA[Final fault]]></text>
+		</element>
+		<element kind="textField" uuid="1e957875-e29f-4416-9a9f-7c8455287cfa" x="0" y="133" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{FINAL_FAULT}]]></expression>
+		</element>
+		<element kind="line" uuid="89709d9d-57ca-41b9-a2e0-10f34e7ce69e" x="0" y="160" width="515" height="1" forecolor="#E6E6E6"/>
+		<element kind="staticText" uuid="aa68ec63-08a8-44f6-8910-ee1dcb556afd" x="0" y="168" width="515" height="16" style="Section">
+			<text><![CDATA[Identification]]></text>
+		</element>
+		<element kind="staticText" uuid="5eccbf52-32b2-43e6-a038-140d195ca039" x="0" y="190" width="247" height="11" style="Label">
+			<text><![CDATA[Tag]]></text>
+		</element>
+		<element kind="textField" uuid="aa96b5da-1bf5-42ad-be80-f968504f8ec7" x="0" y="201" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{TAG}]]></expression>
+		</element>
+		<element kind="staticText" uuid="0a8751b7-d47e-4434-bb27-ec5b602f1282" x="257" y="190" width="247" height="11" style="Label">
+			<text><![CDATA[Serial number]]></text>
+		</element>
+		<element kind="textField" uuid="8a51d99e-f3b5-43ec-99a2-75c5a7f2eb3d" x="257" y="201" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{SERIAL_NUMBER}]]></expression>
+		</element>
+		<element kind="staticText" uuid="c9c34620-f287-472f-9d18-32a3ea1981c0" x="0" y="222" width="247" height="11" style="Label">
+			<text><![CDATA[Status]]></text>
+		</element>
+		<element kind="textField" uuid="b10d9557-a8f8-4a5d-aa4d-549565f6eed4" x="0" y="233" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{STATUS}]]></expression>
+		</element>
+		<element kind="staticText" uuid="7cad78b7-d2fe-4278-a416-dd8cba945a94" x="257" y="222" width="247" height="11" style="Label">
+			<text><![CDATA[Manufacturer]]></text>
+		</element>
+		<element kind="textField" uuid="828395e1-2c15-4747-8349-e9d6f0b9a826" x="257" y="233" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{MANUFACTURER}]]></expression>
+		</element>
+		<element kind="staticText" uuid="8d33b5e1-336f-4da7-9284-e8e77591052c" x="0" y="254" width="247" height="11" style="Label">
+			<text><![CDATA[Manufacture year]]></text>
+		</element>
+		<element kind="textField" uuid="f4ad419a-f533-41ad-92d5-f6e6ca14c82b" x="0" y="265" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{MANUFACTURE_YEAR}]]></expression>
+		</element>
+		<element kind="staticText" uuid="0446a0ce-544e-46db-8d9d-9844b428453c" x="257" y="254" width="247" height="11" style="Label">
+			<text><![CDATA[Commissioning date]]></text>
+		</element>
+		<element kind="textField" uuid="a70aec36-9496-49fd-8cd9-d836f2b33960" x="257" y="265" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{COMMISSIONING_DATE}]]></expression>
+		</element>
+		<element kind="staticText" uuid="127680b4-a93d-4714-9cbf-a6bc97d93687" x="0" y="286" width="247" height="11" style="Label">
+			<text><![CDATA[Criticality]]></text>
+		</element>
+		<element kind="textField" uuid="056f07f8-d431-49d3-bf2e-9f3ad5641a4e" x="0" y="297" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{CRITICALITY}]]></expression>
+		</element>
+		<element kind="line" uuid="38833f4d-e115-4809-a494-ff914ba5241b" x="0" y="324" width="515" height="1" forecolor="#E6E6E6"/>
+		<element kind="staticText" uuid="e78da5d9-d6ef-4dcd-8fe1-96717762033c" x="0" y="332" width="515" height="16" style="Section">
+			<text><![CDATA[Electrical data]]></text>
+		</element>
+		<element kind="staticText" uuid="991d7f95-737b-4dba-9dde-857acff0645b" x="0" y="354" width="247" height="11" style="Label">
+			<text><![CDATA[Rated power]]></text>
+		</element>
+		<element kind="textField" uuid="4b670d28-a626-415e-a110-bc30f9ed1d70" x="0" y="365" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{RATED_POWER}]]></expression>
+		</element>
+		<element kind="staticText" uuid="f0124860-ff76-4ff5-8188-d496f9bc3435" x="257" y="354" width="247" height="11" style="Label">
+			<text><![CDATA[Oil type]]></text>
+		</element>
+		<element kind="textField" uuid="9b6a3ac1-13e0-4977-b5fe-94a7e24c8171" x="257" y="365" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{OIL_TYPE}]]></expression>
+		</element>
+		<element kind="staticText" uuid="d7423550-d144-4d53-93ef-080207cf0802" x="0" y="386" width="247" height="11" style="Label">
+			<text><![CDATA[Primary voltage]]></text>
+		</element>
+		<element kind="textField" uuid="a1e8a86f-fb85-46c8-9523-dfdb3e20b19d" x="0" y="397" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{PRIMARY_VOLTAGE}]]></expression>
+		</element>
+		<element kind="staticText" uuid="eaf6d08a-b2f0-4022-90a6-d1756e869f89" x="257" y="386" width="247" height="11" style="Label">
+			<text><![CDATA[Secondary voltage]]></text>
+		</element>
+		<element kind="textField" uuid="adc10cc6-3c35-4509-8fe0-ef826fd1db52" x="257" y="397" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{SECONDARY_VOLTAGE}]]></expression>
+		</element>
+		<element kind="line" uuid="de4d6334-6b60-4c74-9d88-07bfb431d877" x="0" y="424" width="515" height="1" forecolor="#E6E6E6"/>
+		<element kind="staticText" uuid="852c02da-6dbb-46fa-9a77-e4b4adb7a34f" x="0" y="432" width="515" height="16" style="Section">
+			<text><![CDATA[Substation]]></text>
+		</element>
+		<element kind="staticText" uuid="69a83edd-94d6-429c-84a4-0b7093280d8b" x="0" y="454" width="247" height="11" style="Label">
+			<text><![CDATA[Acronym]]></text>
+		</element>
+		<element kind="textField" uuid="ba84635a-15c7-4ea4-82f3-d01cfcc90549" x="0" y="465" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{SUBSTATION_ACRONYM}]]></expression>
+		</element>
+		<element kind="staticText" uuid="a00b83e1-2902-4cf5-9ee0-23d8bd96a114" x="257" y="454" width="247" height="11" style="Label">
+			<text><![CDATA[Name]]></text>
+		</element>
+		<element kind="textField" uuid="6c069bf2-8010-4498-9b95-c001d2475943" x="257" y="465" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{SUBSTATION_NAME}]]></expression>
+		</element>
+		<element kind="staticText" uuid="156af0ec-896f-43c0-aafc-c946abfe26f1" x="0" y="486" width="247" height="11" style="Label">
+			<text><![CDATA[City / State]]></text>
+		</element>
+		<element kind="textField" uuid="a6762805-a65a-4819-8b68-2fb4a5c2922b" x="0" y="497" width="247" height="15" blankWhenNull="true" textAdjust="StretchHeight" style="Value">
+			<expression><![CDATA[$P{SUBSTATION_LOCATION}]]></expression>
+		</element>
+	</title>
+</jasperReport>

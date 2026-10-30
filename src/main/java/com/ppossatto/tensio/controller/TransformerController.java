@@ -1,8 +1,13 @@
 package com.ppossatto.tensio.controller;
 
 import com.ppossatto.tensio.domain.diagnosis.HealthStatus;
+import com.ppossatto.tensio.service.TransformerReportService;
 import com.ppossatto.tensio.service.TransformerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 class TransformerController {
 
   private final TransformerService transformers;
+  private final TransformerReportService reports;
 
   @GetMapping
   String index(@RequestParam(required = false) HealthStatus health,
@@ -40,6 +46,16 @@ class TransformerController {
     model.addAttribute("transformer", transformers.find(id));
     transformers.latestDiagnosis(id).ifPresent(d -> model.addAttribute("diagnosis", d));
     return "transformers/detail";
+  }
+
+  @GetMapping("/{id}/pdf")
+  ResponseEntity<byte[]> pdf(@PathVariable Long id) {
+    var file = reports.transformerPdf(id);
+    var disposition = ContentDisposition.attachment().filename(file.fileName()).build();
+    return ResponseEntity.ok()
+       .contentType(MediaType.APPLICATION_PDF)
+       .header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
+       .body(file.content());
   }
 
   private void fillList(HealthStatus health, String q, int page, Model model) {

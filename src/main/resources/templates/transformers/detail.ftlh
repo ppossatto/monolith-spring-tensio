@@ -21,9 +21,15 @@
 <#assign location = (s.city()!"") + s.state()???then(" / " + s.state(), "")>
 
 <@layout.page title="Transformer ${t.tag()}" active="transformers">
-    <a href="<@spring.url '/transformers'/>" class="d-inline-flex align-items-center gap-1 mb-3 small">
-        <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to transformers
-    </a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="<@spring.url '/transformers'/>" class="d-inline-flex align-items-center gap-1 small">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to transformers
+        </a>
+        <a href="<@spring.url '/transformers/${t.id()?c}/pdf'/>" class="btn btn-sm btn-outline-secondary"
+           download>
+            <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> Export PDF
+        </a>
+    </div>
 
     <form class="d-flex flex-column gap-4" aria-label="Transformer ${t.tag()}">
         <section class="card">
