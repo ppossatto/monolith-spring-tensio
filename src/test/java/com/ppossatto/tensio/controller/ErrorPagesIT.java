@@ -4,6 +4,7 @@ import com.ppossatto.tensio.WebIntegrationTest;
 import jakarta.servlet.RequestDispatcher;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -109,7 +110,9 @@ class ErrorPagesIT {
   }
 
   private ResultActions error(int status, String path, Throwable exception) throws Exception {
+    // text/html, as a browser sends: without it the error controller answers with JSON
     var request = get("/error")
+       .accept(MediaType.TEXT_HTML)
        .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, status)
        .requestAttr(RequestDispatcher.ERROR_REQUEST_URI, path);
     if (exception != null) {
