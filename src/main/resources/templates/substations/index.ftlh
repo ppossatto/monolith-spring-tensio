@@ -1,7 +1,7 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Substations" active="substations">
+<@layout.page title="Substations" active="substations" map=true>
     <#-- Attention filter and search share one form, so both are always sent together.
          Without JavaScript the form still works as a plain GET. -->
     <form role="search" action="<@spring.url '/substations'/>" method="get"
@@ -31,6 +31,12 @@
             </#if>
         </div>
     </form>
+
+    <#-- Markers come from the rows of the current page (data-lat / data-lng), updated after every HTMX swap -->
+    <div class="card mb-3">
+        <div class="substation-map substation-map-lg rounded" data-substation-map
+             data-markers="#substations tr[data-lat]" role="region" aria-label="Map of the listed substations"></div>
+    </div>
 
     <div class="card">
         <#include "_table.ftlh">

@@ -235,6 +235,12 @@
 			<artifactId>bootstrap-icons</artifactId>
 			<version>1.13.1</version>
 		</dependency>
+		<!-- Maps of substations (OpenStreetMap tiles) -->
+		<dependency>
+			<groupId>org.webjars.npm</groupId>
+			<artifactId>leaflet</artifactId>
+			<version>1.9.4</version>
+		</dependency>
 	</dependencies>
 
 	<build>

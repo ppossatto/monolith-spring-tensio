@@ -8,6 +8,7 @@ Tensio is a monolithic Spring MVC application with server-side rendering.
 
 - Java 25, Spring Boot 4 (Spring Framework 7), Maven (use `./mvnw`)
 - Freemarker views (`.ftlh`), HTMX for partial updates, Bootstrap and Chart.js via WebJars
+- Substation maps: Leaflet (WebJar) with OpenStreetMap tiles, `static/js/substation-map.js`; pages opt in with `<@layout.page map=true>` (attribution to OpenStreetMap is mandatory)
 - PostgreSQL with Flyway migrations, Spring Data JPA, MapStruct
 - Spring Security with form login; users in the `app_user` table (BCrypt), `ADMIN` / `USER` roles
 

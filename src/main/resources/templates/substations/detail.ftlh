@@ -14,7 +14,7 @@
 <#assign latitude = s.latitude()???then(s.latitude()?string["0.0000000"], "")>
 <#assign longitude = s.longitude()???then(s.longitude()?string["0.0000000"], "")>
 
-<@layout.page title="Substation ${s.acronym()}" active="substations">
+<@layout.page title="Substation ${s.acronym()}" active="substations" map=true>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <a href="<@spring.url '/substations'/>" class="d-inline-flex align-items-center gap-1 small">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to substations
@@ -43,6 +43,18 @@
                 <@field id="state" label="State" value=s.state()!"" col="col-md-6"/>
                 <@field id="latitude" label="Latitude" value=latitude col="col-md-6"/>
                 <@field id="longitude" label="Longitude" value=longitude col="col-md-6"/>
+                <div class="col-12">
+                    <#if s.latitude()?? && s.longitude()??>
+                        <div class="substation-map rounded border" data-substation-map
+                             data-lat="${s.latitude()?c}" data-lng="${s.longitude()?c}"
+                             data-label="${s.acronym()}<#if s.name()??> · ${s.name()}</#if>"
+                             role="region" aria-label="Map of substation ${s.acronym()}"></div>
+                    <#else>
+                        <p class="text-muted small mb-0">
+                            <i class="bi bi-geo-alt" aria-hidden="true"></i> No coordinates registered.
+                        </p>
+                    </#if>
+                </div>
             </div>
         </section>
     </form>
