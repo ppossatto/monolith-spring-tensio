@@ -43,8 +43,11 @@
         <div class="form-check mb-2">
             <input type="hidden" name="_${spring.status.expression}" value="on">
             <input type="checkbox" id="${spring.status.expression}" name="${spring.status.expression}" value="true"
-                   class="form-check-input"<#if (spring.status.value!false)?is_boolean && spring.status.value> checked</#if>>
+                   class="form-check-input<#if spring.status.error> is-invalid</#if>"<#if (spring.status.value!false)?is_boolean && spring.status.value> checked</#if>>
             <label for="${spring.status.expression}" class="form-check-label">${label}</label>
+            <#list spring.status.errorMessages as error>
+                <div class="invalid-feedback">${error}</div>
+            </#list>
         </div>
     </div>
 </#macro>

@@ -11,9 +11,14 @@
 </#macro>
 
 <@layout.page title="User ${u.username()}" active="users">
-    <a href="<@spring.url '/users'/>" class="d-inline-flex align-items-center gap-1 mb-3 small">
-        <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to users
-    </a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="<@spring.url '/users'/>" class="d-inline-flex align-items-center gap-1 small">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to users
+        </a>
+        <a href="<@spring.url '/users/${u.id()?c}/edit'/>" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-pencil" aria-hidden="true"></i> Edit
+        </a>
+    </div>
 
     <form class="d-flex flex-column gap-4" aria-label="User ${u.username()}">
         <section class="card">
