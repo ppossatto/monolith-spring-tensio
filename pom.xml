@@ -347,6 +347,8 @@
 					<excludes>
 						<!-- Generated MapStruct implementations -->
 						<exclude>**/*MapperImpl.class</exclude>
+						<!-- Bootstrap class: only main(), started by the tests through Spring Boot -->
+						<exclude>com/ppossatto/tensio/Application.class</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebIntegrationTest
 class UserPagesIT {
@@ -68,6 +69,20 @@ class UserPagesIT {
   @WithMockUser(roles = "USER")
   void userDoesNotSeeTheUsersMenu() throws Exception {
     assertThat(dashboard()).doesNotContain("href=\"/users\"");
+  }
+
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  void htmxRequestGetsOnlyTheTable() throws Exception {
+    mvc.perform(get("/users").param("role", "ADMIN").header("HX-Request", "true"))
+       .andExpect(status().isOk())
+       .andExpect(view().name("users/_table"));
+  }
+
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  void unknownUserIsNotFound() throws Exception {
+    mvc.perform(get("/users/{id}", 999_999)).andExpect(status().isNotFound());
   }
 
   @Test
