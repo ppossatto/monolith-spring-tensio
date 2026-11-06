@@ -73,6 +73,7 @@ Rules:
 - Exception: if a `@RestController` (JSON endpoint) is added, it uses dedicated response DTOs as its public contract.
 - JPQL constructor expressions must use the fully qualified name of a class that exists in `repository/projection`.
 - Views live in `src/main/resources/templates`. HTMX partials are prefixed with `_` (for example `_table.ftlh`).
+- Error pages are resolved by Spring Boot: `templates/error/404.ftlh`, `error/5xx.ftlh` and the fallback `templates/error.ftlh` (other statuses), all built with the `error/_page.ftlh` macro. They never show exception details.
 - Schema changes go through a new Flyway migration (`V<n>__description.sql`) in `db/migration`; never edit an applied migration.
 - Dummy / sample data lives in `db/dev` and only runs with the `dev` profile. Versions are shared with `db/migration`, so pick a number no schema migration uses.
 
