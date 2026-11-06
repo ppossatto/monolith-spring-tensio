@@ -15,7 +15,11 @@
             </thead>
             <tbody>
             <#list substations.content as s>
-                <tr data-href="<@spring.url '/substations/${s.id()?c}'/>">
+                <tr data-href="<@spring.url '/substations/${s.id()?c}'/>"
+                    <#if s.latitude()?? && s.longitude()??>
+                        data-lat="${s.latitude()?c}" data-lng="${s.longitude()?c}"
+                        data-label="${s.acronym()}<#if s.name()??> · ${s.name()}</#if>"
+                    </#if>>
                     <td><a href="<@spring.url '/substations/${s.id()?c}'/>">${s.acronym()}</a></td>
                     <td>${s.name()!'—'}</td>
                     <td><#if s.city()??>${s.city()}<#if s.state()??> / ${s.state()}</#if><#else>—</#if></td>

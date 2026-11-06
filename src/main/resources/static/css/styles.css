@@ -226,3 +226,11 @@ tr[data-href] { cursor: pointer; }
 
 .login-alert-error { color: var(--bs-danger-text-emphasis); background: var(--bs-danger-bg-subtle); }
 .login-alert-info { color: var(--bs-info-text-emphasis); background: var(--bs-info-bg-subtle); }
+
+/* Substation maps (Leaflet) */
+.substation-map { height: 280px; z-index: 0; }
+.substation-map-lg { height: 360px; }
+/* OpenStreetMap tiles have no dark style: darken them in dark mode, keeping markers and controls as they are */
+[data-bs-theme="dark"] .substation-map .leaflet-tile-pane {
+    filter: invert(1) hue-rotate(180deg) brightness(.9) contrast(.9);
+}

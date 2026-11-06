@@ -22,7 +22,7 @@ public interface SubstationRepository extends JpaRepository<SubstationEntity, Lo
   /// Substation summaries, grouped, without filter or ordering.
   String SUMMARY_SELECT = """
             select new com.ppossatto.tensio.repository.projection.SubstationRow(
-                s.id, s.acronym, s.name, s.city, s.state, s.active, count(t.id),
+                s.id, s.acronym, s.name, s.city, s.state, s.active, s.latitude, s.longitude, count(t.id),
             """ + ATTENTION_COUNT + """
             )
             from SubstationEntity s
@@ -35,7 +35,7 @@ public interface SubstationRepository extends JpaRepository<SubstationEntity, Lo
             where (lower(s.acronym) like :namePattern escape '!' or lower(s.name) like :namePattern escape '!')
             """;
 
-  String GROUP_BY = "group by s.id, s.acronym, s.name, s.city, s.state, s.active ";
+  String GROUP_BY = "group by s.id, s.acronym, s.name, s.city, s.state, s.active, s.latitude, s.longitude ";
 
   String ATTENTION_FIRST = "order by " + ATTENTION_COUNT + " desc, s.acronym";
 
