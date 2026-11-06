@@ -19,6 +19,7 @@ Tensio is a monolithic Spring MVC application with server-side rendering.
 ## Build and code quality
 
 - `./mvnw verify` runs, in order: Enforcer (Java 25+, Maven 3.9+), Checkstyle (`config/checkstyle/checkstyle.xml`, warnings only), unit tests (Surefire), integration and Playwright tests (Failsafe) and the JaCoCo report (`target/site/jacoco/index.html`, unit + integration coverage).
+- The JaCoCo `check` fails `verify` when line coverage (unit + integration, MapStruct implementations excluded) is below 80% (`jacoco.minimum.coverage`). New code comes with tests that keep it above the limit.
 - Keep new code free of Checkstyle warnings: 2-space indentation, 3-space continuation lines, 120 columns, braces on every `if` / loop.
 
 ## Documentation
