@@ -95,7 +95,14 @@ public class AnalysisImportService {
     executor.shutdownNow();
   }
 
-  private void runImport(Path file, String fileName, String recipient) {
+  /// Imports a file synchronously, deletes it and publishes the summary event. Package-private for the
+  /// integration tests; the application calls it through {@link #importFile}.
+  ///
+  /// @param file      the file to import, deleted afterwards
+  /// @param fileName  original file name, shown in the e-mail
+  /// @param recipient e-mail of the user who uploaded it
+  /// @return the published event: stored analyses with their diagnoses and rejected lines
+  AnalysesDiagnosedEvent runImport(Path file, String fileName, String recipient) {
     List<DiagnosedAnalysis> results = Collections.synchronizedList(new ArrayList<>());
     List<String> errors = Collections.synchronizedList(new ArrayList<>());
     try {
@@ -112,7 +119,9 @@ public class AnalysisImportService {
     }
     log.info("Import of {} by {}: {} analyses stored, {} lines rejected", fileName, recipient, results.size(),
        errors.size());
-    events.publishEvent(new AnalysesDiagnosedEvent(recipient, fileName, List.copyOf(results), List.copyOf(errors)));
+    var event = new AnalysesDiagnosedEvent(recipient, fileName, List.copyOf(results), List.copyOf(errors));
+    events.publishEvent(event);
+    return event;
   }
 
   private BatchStatus run(Path file, List<DiagnosedAnalysis> results, List<String> errors) throws Exception {
