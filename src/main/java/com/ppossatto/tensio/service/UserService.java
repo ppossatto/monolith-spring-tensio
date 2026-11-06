@@ -2,6 +2,7 @@ package com.ppossatto.tensio.service;
 
 import com.ppossatto.tensio.domain.user.UserAccount;
 import com.ppossatto.tensio.domain.user.UserRole;
+import com.ppossatto.tensio.form.UserForm;
 import com.ppossatto.tensio.mapper.UserMapper;
 import com.ppossatto.tensio.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,5 +49,38 @@ public class UserService {
     return users.findById(id)
        .map(userMapper::toAccount)
        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+  }
+
+  /// Returns the edit form of a user, filled with its current role and status.
+  ///
+  /// @param id the user id
+  /// @return the form
+  /// @throws ResponseStatusException with 404 when the user does not exist
+  public UserForm form(Long id) {
+    return userMapper.toForm(find(id));
+  }
+
+  /// Changes the role and status of a user. An administrator cannot remove their own access (role or
+  /// status), so there is always an active administrator left. The change applies at the user's next
+  /// sign-in; an open session keeps the previous access until it ends.
+  ///
+  /// @param id            the user to change
+  /// @param form          the validated form
+  /// @param administrator e-mail of the signed-in administrator making the change
+  /// @throws ResponseStatusException with 404 when the user does not exist
+  /// @throws FieldConflictException  when the administrator would demote or deactivate themselves
+  @Transactional
+  public void update(Long id, UserForm form, String administrator) {
+    var entity = users.findById(id)
+       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    if (entity.getUsername().equalsIgnoreCase(administrator)) {
+      if (form.getRole() != UserRole.ADMIN) {
+        throw new FieldConflictException("role", "you cannot remove your own administrator role");
+      }
+      if (!form.isActive()) {
+        throw new FieldConflictException("active", "you cannot deactivate your own account");
+      }
+    }
+    userMapper.update(form, entity);
   }
 }

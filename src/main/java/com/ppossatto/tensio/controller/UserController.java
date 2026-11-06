@@ -1,16 +1,26 @@
 package com.ppossatto.tensio.controller;
 
 import com.ppossatto.tensio.domain.user.UserRole;
+import com.ppossatto.tensio.form.UserForm;
+import com.ppossatto.tensio.service.FieldConflictException;
 import com.ppossatto.tensio.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/// User pages, `ADMIN` only: list (`/users`) and read-only detail (`/users/{id}`).
+import java.security.Principal;
+
+/// User pages, `ADMIN` only: list (`/users`), detail (`/users/{id}`) and the form that changes the role and
+/// status of a user (`/users/{id}/edit`).
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -60,6 +70,51 @@ class UserController {
   String detail(@PathVariable Long id, Model model) {
     model.addAttribute("user", users.find(id));
     return "users/detail";
+  }
+
+  /// Shows the edit form of a user (role and status).
+  ///
+  /// @param id    the user id
+  /// @param model the view model
+  /// @return the `users/form` view; 404 when the user does not exist
+  @GetMapping("/{id}/edit")
+  String editForm(@PathVariable Long id, Model model) {
+    model.addAttribute("form", users.form(id));
+    fillForm(id, model);
+    return "users/form";
+  }
+
+  /// Changes the role and status of a user and opens it; shows the form again with the errors when invalid
+  /// or when the administrator would remove their own access.
+  ///
+  /// @param id        the user id
+  /// @param form      the submitted form
+  /// @param result    validation result of `form`
+  /// @param principal the signed-in administrator
+  /// @param model     the view model
+  /// @param redirect  flash attributes for the next page
+  /// @return a redirect to the user, or the `users/form` view
+  @PostMapping("/{id}")
+  String update(@PathVariable Long id, @Valid @ModelAttribute("form") UserForm form, BindingResult result,
+                Principal principal, Model model, RedirectAttributes redirect) {
+    fillForm(id, model);
+    if (result.hasErrors()) {
+      return "users/form";
+    }
+    try {
+      users.update(id, form, principal.getName());
+      redirect.addFlashAttribute("message", "User " + users.find(id).username() + " updated.");
+      return "redirect:/users/" + id;
+    } catch (FieldConflictException e) {
+      result.rejectValue(e.getField(), "conflict", e.getMessage());
+      return "users/form";
+    }
+  }
+
+  /// Adds the user being edited (e-mail shown read-only) and the role options.
+  private void fillForm(Long id, Model model) {
+    model.addAttribute("user", users.find(id));
+    model.addAttribute("roles", UserRole.values());
   }
 
   private void fillList(UserRole role, String q, int page, Model model) {
