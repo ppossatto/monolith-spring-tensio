@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.1.1</version>
+		<version>4.1.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ppossatto</groupId>
@@ -31,11 +31,11 @@
 		<jasperreports.version>7.1.0</jasperreports.version>
 		<!-- Overrides the ecj 3.21 pulled by jasperreports-jdt, which predates Java 25 class files -->
 		<ecj.version>3.46.100</ecj.version>
-		<jacoco.version>0.8.15</jacoco.version>
+		<jacoco.version>0.8.16</jacoco.version>
 		<!-- Minimum line coverage of unit + integration tests; override with -Djacoco.minimum.coverage=0.70 -->
 		<jacoco.minimum.coverage>0.80</jacoco.minimum.coverage>
 		<maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
-		<checkstyle.version>14.3.0</checkstyle.version>
+		<checkstyle.version>14.4.0</checkstyle.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -165,7 +165,7 @@
 		<dependency>
 			<groupId>com.microsoft.playwright</groupId>
 			<artifactId>playwright</artifactId>
-			<version>1.63.0</version>
+			<version>1.64.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -176,7 +176,7 @@
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
-			<version>1.23.2</version>
+			<version>1.24.1</version>
 			<scope>test</scope>
 		</dependency>
 
