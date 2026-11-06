@@ -20,7 +20,8 @@
             <p class="text-muted mb-4">${text}</p>
             <div class="d-flex flex-wrap justify-content-center gap-2">
                 <#if retry && path?? && path?has_content>
-                    <a href="<@spring.url path/>" class="btn btn-outline-primary">
+                    <#-- getContextUrl instead of spring.url: the path comes from the request and must be HTML-escaped -->
+                    <a href="${springMacroRequestContext.getContextUrl(path)}" class="btn btn-outline-primary">
                         <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Try again
                     </a>
                 </#if>
