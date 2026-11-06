@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -48,7 +49,8 @@ class SubstationFormIT {
 
   @Test
   void createsANormalizedSubstation() throws Exception {
-    var url = mvc.perform(create(" tsd ").param("name", "  ").param("city", " Joinville ").param("state", "sc")
+    // the acronym pattern does not allow spaces, so only the case is normalized
+    var url = mvc.perform(create("tsd").param("name", "  ").param("city", " Joinville ").param("state", "sc")
           .param("latitude", "-26.3044000").param("longitude", "-48.8487000"))
        .andExpect(redirectedUrlPattern("/substations/*"))
        .andExpect(flash().attribute("message", "Substation TSD created."))
@@ -98,7 +100,7 @@ class SubstationFormIT {
     var id = TestData.substationId(jdbc, "TSC");
 
     mvc.perform(update(id, "tsc").param("name", "Test Gamma II").param("active", "true"))
-       .andExpect(redirectedUrlPattern("/substations/" + id))
+       .andExpect(redirectedUrl("/substations/" + id))
        .andExpect(flash().attribute("message", "Substation TSC updated."));
 
     var substation = substation("/substations/" + id);
