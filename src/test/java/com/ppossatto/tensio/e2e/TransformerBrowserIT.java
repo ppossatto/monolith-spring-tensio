@@ -60,8 +60,9 @@ class TransformerBrowserIT extends PlaywrightSupport {
   void detailRendersBothGasCharts() {
     row("transformers", "TT-01").click();
 
-    page.waitForFunction("() => [...document.querySelectorAll('canvas[data-gas-chart]')]"
-       + ".filter(c => Chart.getChart(c)).length === 2");
+    // Chart.js is loaded with defer: the predicate may run before the global exists
+    page.waitForFunction("() => typeof Chart !== 'undefined'"
+       + " && [...document.querySelectorAll('canvas[data-gas-chart]')].filter(c => Chart.getChart(c)).length === 2");
   }
 
   @Test
